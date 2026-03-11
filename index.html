@@ -650,15 +650,8 @@
             .zone-stat-card .num { font-size: 18px; }
             .zone-stat-card .lbl { font-size: 10px; }
 
-            /* Legend centered above buttons */
-            .legend {
-                bottom: 70px;
-                right: auto;
-                left: 50%;
-                transform: translateX(-50%);
-                padding: 6px 10px;
-                font-size: 11px;
-            }
+            /* Legend: hidden on mobile */
+            .legend { display: none; }
 
             /* Popups */
             .leaflet-popup-content-wrapper { max-width: 280px !important; }
@@ -1677,8 +1670,20 @@
         }
         function mobileOpenZones() {
             const sidebar = document.getElementById('sidebar');
-            sidebar.classList.add('collapsed');
+            // If sidebar open, close it
+            if (!sidebar.classList.contains('collapsed')) {
+                sidebar.classList.add('collapsed');
+                return;
+            }
+            // Open sidebar and scroll to zones section
+            closeZonePanel();
+            sidebar.classList.remove('collapsed');
+            // Activate zones if not already
             if (!zonesEnabled) toggleZones();
+            // Scroll to the zones section
+            setTimeout(() => {
+                document.getElementById('btn-toggle-zones').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 100);
         }
 
         // Mobile: start with sidebar collapsed
