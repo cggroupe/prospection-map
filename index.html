@@ -1,0 +1,1549 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carte DPE Bretagne - Prospects Renovation</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+
+        #map { width: 100%; height: 100vh; }
+
+        /* Panel lateral */
+        #sidebar {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 340px;
+            height: 100vh;
+            background: #1a1a2e;
+            color: #eee;
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+        }
+        #sidebar.collapsed { transform: translateX(-340px); }
+
+        #toggle-sidebar {
+            position: absolute;
+            top: 10px;
+            left: 350px;
+            z-index: 1001;
+            background: #1a1a2e;
+            color: #fff;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            font-size: 18px;
+            transition: left 0.3s;
+        }
+        #toggle-sidebar.collapsed { left: 0; }
+
+        .sidebar-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #e94560, #0f3460);
+            text-align: center;
+        }
+        .sidebar-header h1 { font-size: 18px; margin-bottom: 4px; }
+        .sidebar-header p { font-size: 12px; opacity: 0.8; }
+
+        .filter-section {
+            padding: 15px 20px;
+            border-bottom: 1px solid #2a2a4a;
+        }
+        .filter-section h3 {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #e94560;
+            margin-bottom: 10px;
+        }
+
+        .filter-group { margin-bottom: 8px; }
+        .filter-group label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 3px 0;
+        }
+        .filter-group input[type="checkbox"] { accent-color: #e94560; }
+
+        select, input[type="range"] {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #3a3a5a;
+            border-radius: 6px;
+            background: #2a2a4a;
+            color: #eee;
+            font-size: 13px;
+            margin-top: 4px;
+        }
+
+        .stats-box {
+            padding: 15px 20px;
+            border-bottom: 1px solid #2a2a4a;
+        }
+        .stat-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 13px;
+        }
+        .stat-value { font-weight: bold; color: #e94560; }
+
+        .btn-reset {
+            display: block;
+            width: calc(100% - 40px);
+            margin: 15px 20px;
+            padding: 10px;
+            background: #e94560;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .btn-reset:hover { background: #d63851; }
+
+        /* Toggle zones button */
+        .btn-zones {
+            display: block;
+            width: calc(100% - 40px);
+            margin: 0 20px 15px;
+            padding: 10px;
+            background: #0f3460;
+            color: white;
+            border: 2px solid #e94560;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .btn-zones:hover { background: #1a4a7a; }
+        .btn-zones.active { background: #e94560; }
+
+        /* Itinerary button */
+        .btn-itinerary {
+            display: block;
+            width: calc(100% - 40px);
+            margin: 10px 20px;
+            padding: 10px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+        }
+        .btn-itinerary:hover { background: #219a52; }
+        .btn-itinerary:disabled { background: #555; cursor: not-allowed; }
+
+        /* DPE badges */
+        .dpe-badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 14px;
+            color: white;
+        }
+        .dpe-F { background: #f07d02; }
+        .dpe-G { background: #e3001b; }
+
+        /* Score badge */
+        .score-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .score-hot { background: #e3001b; color: white; }
+        .score-warm { background: #f07d02; color: white; }
+        .score-tepid { background: #f0c800; color: #333; }
+        .score-cold { background: #8bc34a; color: white; }
+
+        /* Conversion score badge */
+        .conv-badge {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: bold;
+            background: #9b59b6;
+            color: white;
+        }
+        .conv-high { background: #8e44ad; }
+        .conv-mid { background: #a569bd; }
+        .conv-low { background: #c39bd3; color: #333; }
+
+        /* Flags porte chaude */
+        .flag-badge {
+            display: inline-block;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: bold;
+            background: #e74c3c;
+            color: white;
+            margin: 1px 2px;
+        }
+        .flag-badge.flag-green { background: #27ae60; }
+        .flag-badge.flag-orange { background: #f39c12; }
+        .flag-badge.flag-blue { background: #2980b9; }
+
+        /* Popup */
+        .leaflet-popup-content-wrapper {
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+        }
+        .popup-content h3 { margin: 0 0 8px; font-size: 15px; color: #1a1a2e; }
+        .popup-content .popup-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            font-size: 12px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .popup-content .popup-label { color: #666; }
+        .popup-content .popup-value { font-weight: 600; color: #1a1a2e; }
+        .popup-content .popup-address {
+            font-size: 11px;
+            color: #888;
+            margin-top: 8px;
+            padding-top: 8px;
+            border-top: 1px solid #eee;
+        }
+        .popup-cost-highlight {
+            background: linear-gradient(135deg, #ffe0e0, #fff0e0);
+            padding: 6px 10px;
+            border-radius: 6px;
+            margin: 8px 0;
+            text-align: center;
+        }
+        .popup-cost-highlight .amount { font-size: 20px; font-weight: bold; color: #e3001b; }
+        .popup-cost-highlight .label { font-size: 11px; color: #666; }
+
+        /* Travaux estimation box */
+        .popup-travaux {
+            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
+            padding: 8px 10px;
+            border-radius: 6px;
+            margin: 8px 0;
+            font-size: 11px;
+        }
+        .popup-travaux .travaux-title {
+            font-weight: bold;
+            color: #2e7d32;
+            margin-bottom: 6px;
+            font-size: 12px;
+        }
+        .popup-travaux .trav-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 2px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+        .popup-travaux .trav-name { color: #333; }
+        .popup-travaux .trav-cost { font-weight: 600; color: #555; }
+        .popup-travaux .trav-aide { color: #27ae60; font-weight: 600; }
+        .popup-travaux-summary {
+            background: linear-gradient(135deg, #e3f2fd, #e8eaf6);
+            padding: 8px 10px;
+            border-radius: 6px;
+            margin: 6px 0;
+            font-size: 12px;
+        }
+        .popup-travaux-summary .summary-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 6px;
+            margin-top: 4px;
+        }
+        .popup-travaux-summary .summary-item {
+            text-align: center;
+            padding: 4px;
+            background: rgba(255,255,255,0.6);
+            border-radius: 4px;
+        }
+        .popup-travaux-summary .summary-item .sv { font-size: 16px; font-weight: bold; }
+        .popup-travaux-summary .summary-item .sl { font-size: 10px; color: #666; }
+        .sv-total { color: #1565c0; }
+        .sv-aides { color: #27ae60; }
+        .sv-reste { color: #e65100; }
+        .sv-eco { color: #2e7d32; }
+        .sv-roi { color: #6a1b9a; }
+
+        /* Flags container in popup */
+        .popup-flags {
+            margin: 6px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 3px;
+        }
+
+        /* Loading */
+        #loading {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            flex-direction: column;
+            gap: 20px;
+        }
+        #loading h2 { color: #eee; }
+        .spinner {
+            width: 50px; height: 50px;
+            border: 4px solid #2a2a4a;
+            border-top-color: #e94560;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        #load-progress { color: #888; font-size: 14px; }
+
+        /* Legend */
+        .legend {
+            position: absolute;
+            bottom: 30px;
+            right: 10px;
+            background: white;
+            padding: 12px 16px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+            font-size: 12px;
+        }
+        .legend-item { display: flex; align-items: center; gap: 8px; padding: 3px 0; }
+        .legend-dot {
+            width: 14px; height: 14px;
+            border-radius: 50%;
+            border: 2px solid white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+        }
+        .legend-square {
+            width: 14px; height: 14px;
+            border: 1px solid rgba(0,0,0,0.3);
+        }
+
+        /* Zone panel (right side) */
+        #zone-panel {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 400px;
+            height: 100vh;
+            background: #1a1a2e;
+            color: #eee;
+            z-index: 1000;
+            overflow-y: auto;
+            box-shadow: -4px 0 15px rgba(0,0,0,0.3);
+            transform: translateX(400px);
+            transition: transform 0.3s;
+        }
+        #zone-panel.open { transform: translateX(0); }
+
+        .zone-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #0f3460, #e94560);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .zone-header h2 { font-size: 16px; }
+        .zone-close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+        }
+
+        .zone-stats {
+            padding: 15px 20px;
+            border-bottom: 1px solid #2a2a4a;
+        }
+        .zone-stats .zone-stat-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .zone-stat-card {
+            background: #2a2a4a;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .zone-stat-card .num { font-size: 22px; font-weight: bold; color: #e94560; }
+        .zone-stat-card .lbl { font-size: 11px; color: #aaa; margin-top: 2px; }
+
+        /* Itinerary info box */
+        .itinerary-info {
+            padding: 12px 20px;
+            background: #1e3a1e;
+            border-bottom: 1px solid #2a4a2a;
+            display: none;
+        }
+        .itinerary-info.visible { display: block; }
+        .itinerary-info .itin-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 8px;
+        }
+        .itinerary-info .itin-stat {
+            text-align: center;
+        }
+        .itinerary-info .itin-stat .iv { font-size: 18px; font-weight: bold; color: #27ae60; }
+        .itinerary-info .itin-stat .il { font-size: 10px; color: #8fbc8f; }
+
+        /* Sort selector */
+        .zone-sort {
+            padding: 10px 20px;
+            border-bottom: 1px solid #2a2a4a;
+        }
+        .zone-sort select {
+            width: 100%;
+            padding: 6px 10px;
+            border: 1px solid #3a3a5a;
+            border-radius: 6px;
+            background: #2a2a4a;
+            color: #eee;
+            font-size: 13px;
+        }
+
+        .zone-address-list {
+            padding: 10px 20px;
+        }
+        .zone-address-list h3 {
+            font-size: 13px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #e94560;
+            margin-bottom: 10px;
+        }
+        .address-item {
+            padding: 10px 12px;
+            margin-bottom: 6px;
+            background: #2a2a4a;
+            border-radius: 8px;
+            border-left: 4px solid;
+            cursor: pointer;
+            transition: background 0.2s;
+            position: relative;
+        }
+        .address-item:hover { background: #3a3a5a; }
+        .address-item.dpe-f-border { border-color: #f07d02; }
+        .address-item.dpe-g-border { border-color: #e3001b; }
+        .address-item .addr-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+        .address-item .addr-address { font-size: 13px; font-weight: 600; }
+        .address-item .addr-details { font-size: 11px; color: #aaa; }
+        .address-item .addr-details span { margin-right: 10px; }
+
+        /* Visit order number */
+        .visit-order {
+            position: absolute;
+            top: -8px;
+            left: -8px;
+            width: 24px;
+            height: 24px;
+            background: #27ae60;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            border: 2px solid #1a1a2e;
+            z-index: 1;
+        }
+
+        /* Grid size selector */
+        .grid-size-selector {
+            display: flex;
+            gap: 6px;
+            margin-top: 8px;
+        }
+        .grid-size-btn {
+            flex: 1;
+            padding: 6px;
+            background: #2a2a4a;
+            color: #eee;
+            border: 1px solid #3a3a5a;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            text-align: center;
+        }
+        .grid-size-btn.active {
+            background: #e94560;
+            border-color: #e94560;
+        }
+
+        /* Zone number overlay on grid cells */
+        .grid-label {
+            background: rgba(26, 26, 46, 0.85);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+
+        /* Itinerary number markers on map */
+        .itin-number-icon {
+            background: #27ae60;
+            color: white;
+            border-radius: 50%;
+            width: 26px;
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+            border: 2px solid white;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+        }
+    </style>
+</head>
+<body>
+    <div id="loading">
+        <div class="spinner"></div>
+        <h2>Chargement de la carte...</h2>
+        <div id="load-progress">59 306 logements DPE F/G en Bretagne</div>
+    </div>
+
+    <div id="sidebar">
+        <div class="sidebar-header">
+            <h1>Prospects Renovation Bretagne</h1>
+            <p>Logements classes F et G</p>
+        </div>
+
+        <div class="stats-box" id="stats">
+            <div class="stat-row"><span>Total affiche</span><span class="stat-value" id="stat-total">-</span></div>
+            <div class="stat-row"><span>Maisons</span><span class="stat-value" id="stat-maisons">-</span></div>
+            <div class="stat-row"><span>Appartements</span><span class="stat-value" id="stat-apparts">-</span></div>
+            <div class="stat-row"><span>Proprio identifie</span><span class="stat-value" id="stat-proprio">-</span></div>
+            <div class="stat-row"><span>Cout moyen/an</span><span class="stat-value" id="stat-cout">-</span></div>
+            <div class="stat-row"><span>Travaux moyen</span><span class="stat-value" id="stat-travaux">-</span></div>
+            <div class="stat-row"><span>Conv. score moy.</span><span class="stat-value" id="stat-conv">-</span></div>
+        </div>
+
+        <div class="filter-section">
+            <h3>Zones de prospection</h3>
+            <button class="btn-zones" id="btn-toggle-zones" onclick="toggleZones()">Activer le quadrillage</button>
+            <div id="grid-options" style="display:none">
+                <div style="font-size:12px;color:#aaa;margin-bottom:6px">Taille des zones :</div>
+                <div class="grid-size-selector">
+                    <button class="grid-size-btn" onclick="setGridSize(0.002)" data-size="0.002">~200m</button>
+                    <button class="grid-size-btn active" onclick="setGridSize(0.005)" data-size="0.005">~500m</button>
+                    <button class="grid-size-btn" onclick="setGridSize(0.01)" data-size="0.01">~1km</button>
+                    <button class="grid-size-btn" onclick="setGridSize(0.02)" data-size="0.02">~2km</button>
+                </div>
+                <div style="font-size:11px;color:#666;margin-top:8px">Zoomez sur une ville puis cliquez sur une zone pour voir la liste des adresses</div>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3>Classe DPE</h3>
+            <div class="filter-group">
+                <label><input type="checkbox" id="filter-F" checked> <span class="dpe-badge dpe-F">F</span> Mauvaise performance</label>
+                <label><input type="checkbox" id="filter-G" checked> <span class="dpe-badge dpe-G">G</span> Tres mauvaise (interdit location)</label>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3>Departement</h3>
+            <div class="filter-group">
+                <label><input type="checkbox" class="dept-filter" value="22" checked> 22 - Cotes-d'Armor</label>
+                <label><input type="checkbox" class="dept-filter" value="29" checked> 29 - Finistere</label>
+                <label><input type="checkbox" class="dept-filter" value="35" checked> 35 - Ille-et-Vilaine</label>
+                <label><input type="checkbox" class="dept-filter" value="56" checked> 56 - Morbihan</label>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3>Type de batiment</h3>
+            <div class="filter-group">
+                <label><input type="checkbox" class="type-filter" value="maison" checked> Maisons</label>
+                <label><input type="checkbox" class="type-filter" value="appartement" checked> Appartements</label>
+                <label><input type="checkbox" class="type-filter" value="immeuble" checked> Immeubles</label>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3>Score prospect</h3>
+            <div class="filter-group">
+                <label><input type="checkbox" class="score-filter" value="hot" checked> <span class="score-badge score-hot">HOT 80-100</span></label>
+                <label><input type="checkbox" class="score-filter" value="warm" checked> <span class="score-badge score-warm">WARM 60-79</span></label>
+                <label><input type="checkbox" class="score-filter" value="tepid" checked> <span class="score-badge score-tepid">TEPID 40-59</span></label>
+                <label><input type="checkbox" class="score-filter" value="cold" checked> <span class="score-badge score-cold">COLD 0-39</span></label>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3>Score conversion min</h3>
+            <input type="range" id="filter-conv" min="0" max="100" value="0" step="5">
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:4px">
+                <span>0</span>
+                <span id="conv-val">0</span>
+                <span>100</span>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3>Surface minimum (m2)</h3>
+            <input type="range" id="filter-surface" min="0" max="300" value="0" step="10">
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:4px">
+                <span>0 m2</span>
+                <span id="surface-val">0 m2</span>
+                <span>300 m2</span>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3>Cout energie min (EUR/an)</h3>
+            <input type="range" id="filter-cout" min="0" max="10000" value="0" step="500">
+            <div style="display:flex;justify-content:space-between;font-size:11px;margin-top:4px">
+                <span>0 EUR</span>
+                <span id="cout-val">0 EUR</span>
+                <span>10 000 EUR</span>
+            </div>
+        </div>
+
+        <div class="filter-section">
+            <h3>Commune</h3>
+            <select id="filter-commune">
+                <option value="">Toutes les communes</option>
+            </select>
+        </div>
+
+        <button class="btn-reset" onclick="resetFilters()">Reinitialiser les filtres</button>
+
+        <div style="padding:15px 20px;font-size:11px;color:#666;text-align:center">
+            Source: ADEME Open Data (DPE)<br>
+            Donnees publiques - Licence Ouverte Etalab 2.0
+        </div>
+    </div>
+
+    <button id="toggle-sidebar" onclick="toggleSidebar()">&#9776;</button>
+
+    <div id="map"></div>
+
+    <!-- Zone detail panel (right) -->
+    <div id="zone-panel">
+        <div class="zone-header">
+            <h2 id="zone-title">Zone de prospection</h2>
+            <button class="zone-close" onclick="closeZonePanel()">&times;</button>
+        </div>
+        <div class="zone-stats">
+            <div class="zone-stat-grid">
+                <div class="zone-stat-card">
+                    <div class="num" id="zone-total">0</div>
+                    <div class="lbl">Prospects</div>
+                </div>
+                <div class="zone-stat-card">
+                    <div class="num" id="zone-hot">0</div>
+                    <div class="lbl">Score HOT</div>
+                </div>
+                <div class="zone-stat-card">
+                    <div class="num" id="zone-dpe-g">0</div>
+                    <div class="lbl">DPE G</div>
+                </div>
+                <div class="zone-stat-card">
+                    <div class="num" id="zone-proprio">0</div>
+                    <div class="lbl">Proprio connu</div>
+                </div>
+                <div class="zone-stat-card">
+                    <div class="num" id="zone-avg-conv">0</div>
+                    <div class="lbl">Conv. moyen</div>
+                </div>
+                <div class="zone-stat-card">
+                    <div class="num" id="zone-avg-travaux">0</div>
+                    <div class="lbl">Travaux moy.</div>
+                </div>
+            </div>
+        </div>
+
+        <div style="padding:10px 20px">
+            <button class="btn-itinerary" id="btn-itinerary" onclick="generateItinerary()">Generer itineraire de tournee</button>
+        </div>
+
+        <div class="itinerary-info" id="itinerary-info">
+            <div style="font-weight:bold;color:#27ae60;font-size:13px">Itineraire optimise</div>
+            <div class="itin-stats">
+                <div class="itin-stat">
+                    <div class="iv" id="itin-stops">0</div>
+                    <div class="il">Arrets</div>
+                </div>
+                <div class="itin-stat">
+                    <div class="iv" id="itin-distance">0</div>
+                    <div class="il">Distance</div>
+                </div>
+                <div class="itin-stat">
+                    <div class="iv" id="itin-time">0</div>
+                    <div class="il">Temps marche</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="zone-sort">
+            <select id="zone-sort-select" onchange="sortZoneAddresses()">
+                <option value="score">Trier par score prospect</option>
+                <option value="conv">Trier par score conversion</option>
+                <option value="cost">Trier par cout energie</option>
+                <option value="travaux">Trier par montant travaux</option>
+                <option value="roi">Trier par ROI (annees)</option>
+                <option value="visit">Trier par ordre de visite</option>
+            </select>
+        </div>
+
+        <div class="zone-address-list">
+            <h3>Adresses a visiter (<span id="zone-addr-count">0</span>)</h3>
+            <div id="zone-addresses"></div>
+        </div>
+    </div>
+
+    <div class="legend" id="legend-box">
+        <div style="font-weight:bold;margin-bottom:6px">Legende</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f07d02"></div> DPE F</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#e3001b"></div> DPE G</div>
+        <div class="legend-item" style="margin-top:6px;font-size:11px;color:#888">Taille = cout energie</div>
+        <div id="legend-conv" style="margin-top:6px;padding-top:6px;border-top:1px solid #ddd">
+            <div style="font-weight:bold;margin-bottom:4px">Score conversion</div>
+            <div class="legend-item"><span class="conv-badge conv-high">CONV 70+</span> Tres facile</div>
+            <div class="legend-item"><span class="conv-badge conv-mid">CONV 40-69</span> Moyen</div>
+            <div class="legend-item"><span class="conv-badge conv-low">CONV 0-39</span> Difficile</div>
+        </div>
+        <div id="legend-zones" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid #ddd">
+            <div style="font-weight:bold;margin-bottom:4px">Densite zones</div>
+            <div class="legend-item"><div class="legend-square" style="background:rgba(233,69,96,0.6)"></div> Forte (10+)</div>
+            <div class="legend-item"><div class="legend-square" style="background:rgba(233,69,96,0.35)"></div> Moyenne (5-9)</div>
+            <div class="legend-item"><div class="legend-square" style="background:rgba(233,69,96,0.15)"></div> Faible (1-4)</div>
+            <div class="legend-item"><div class="legend-square" style="background:rgba(200,200,200,0.1);border:1px dashed #ccc"></div> Vide</div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+    <script>
+        let map, markers, allData = [], filteredData = [];
+        const communes = new Set();
+        let zonesEnabled = false;
+        let gridLayer = null;
+        let gridLabelsLayer = null;
+        let gridSize = 0.005; // ~500m
+        let selectedZoneRect = null;
+        let currentZoneData = [];
+        let itineraryLayer = null;
+        let itineraryNumbersLayer = null;
+        let itineraryOrder = []; // indices into currentZoneData after sorting
+
+        const DPE_COLORS = { F: '#f07d02', G: '#e3001b' };
+
+        // Init map
+        map = L.map('map', { zoomControl: false }).setView([48.2, -2.8], 8);
+        L.control.zoom({ position: 'topright' }).addTo(map);
+
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; OpenStreetMap &copy; CARTO',
+            maxZoom: 19
+        }).addTo(map);
+
+        // Cluster group
+        markers = L.markerClusterGroup({
+            maxClusterRadius: 60,
+            spiderfyOnMaxZoom: true,
+            showCoverageOnHover: false,
+            chunkedLoading: true,
+            chunkProgress: (processed, total) => {
+                document.getElementById('load-progress').textContent =
+                    `Chargement: ${Math.round(processed/total*100)}%`;
+            },
+            iconCreateFunction: function(cluster) {
+                const count = cluster.getChildCount();
+                let dim = 40;
+                if (count > 100) dim = 60;
+                else if (count > 30) dim = 50;
+
+                return L.divIcon({
+                    html: `<div style="
+                        background: linear-gradient(135deg, #e94560, #0f3460);
+                        color: white;
+                        border-radius: 50%;
+                        width: ${dim}px;
+                        height: ${dim}px;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        font-weight: bold;
+                        font-size: ${count > 999 ? '11' : '13'}px;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                        border: 3px solid rgba(255,255,255,0.8);
+                    ">${count > 999 ? (count/1000).toFixed(1)+'k' : count}</div>`,
+                    className: '',
+                    iconSize: [dim, dim]
+                });
+            }
+        });
+        map.addLayer(markers);
+
+        // ========== FLAGS SYSTEM ==========
+
+        function getFlags(d) {
+            // Use pre-computed flags from data, or compute dynamically
+            if (d.flags && d.flags.length > 0) return d.flags;
+            const flags = [];
+            if (d.dpe === 'G') flags.push('Interdit location 2025');
+            if (d.nrj_ch && (d.nrj_ch.toLowerCase().includes('fioul') || (d.desc_ch && d.desc_ch.toLowerCase().includes('fioul')))) {
+                flags.push('Chaudiere fioul (interdiction)');
+            }
+            if (d.prop) flags.push('Proprietaire identifie');
+            if (d.cout && d.cout > 3000) flags.push('Facture energie ' + Math.round(d.cout) + ' EUR/an');
+            return flags;
+        }
+
+        function flagToHtml(flag) {
+            let cssClass = '';
+            if (flag.includes('Interdit location')) cssClass = '';
+            else if (flag.includes('fioul')) cssClass = '';
+            else if (flag.includes('Proprietaire') || flag.includes('Propriétaire')) cssClass = 'flag-blue';
+            else if (flag.includes('Facture') || flag.includes('energie')) cssClass = 'flag-orange';
+            else cssClass = '';
+            return `<span class="flag-badge ${cssClass}">${flag}</span>`;
+        }
+
+        // ========== CONVERSION SCORE ==========
+
+        function getConvScore(d) {
+            // Use pre-computed cs, or compute dynamically
+            if (d.cs !== undefined && d.cs !== null) return d.cs;
+            let score = 0;
+            if (d.typ === 'maison') score += 20;
+            if (d.dpe === 'G') score += 20;
+            else if (d.dpe === 'F') score += 10;
+            if (d.prop && d.prop_type && (d.prop_type.includes('SCI') || d.prop_type.includes('civile'))) score += 10;
+            if (d.cout && d.cout > 3000) score += 15;
+            if (d.est_roi && d.est_roi <= 10) score += 15;
+            if (d.est_reste && d.est_reste < 10000) score += 10;
+            if (d.surf && d.surf > 100) score += 10;
+            return Math.min(score, 100);
+        }
+
+        function convBadgeHtml(cs) {
+            const cls = cs >= 70 ? 'conv-high' : cs >= 40 ? 'conv-mid' : 'conv-low';
+            return `<span class="conv-badge ${cls}">CONV ${cs}/100</span>`;
+        }
+
+        // ========== TRAVAUX ESTIMATION ==========
+
+        function travauxPopupHtml(d) {
+            if (!d.trav || d.trav.length === 0) return '';
+
+            let lines = d.trav.map(t =>
+                `<div class="trav-line">
+                    <span class="trav-name">${t.n}</span>
+                    <span><span class="trav-cost">${t.c.toLocaleString('fr-FR')} EUR</span> <span class="trav-aide" style="font-size:10px">(aide: ${t.a.toLocaleString('fr-FR')})</span></span>
+                </div>`
+            ).join('');
+
+            const totalHtml = d.est_total ? d.est_total.toLocaleString('fr-FR') : '?';
+            const aidesHtml = d.est_aides ? d.est_aides.toLocaleString('fr-FR') : '?';
+            const resteHtml = d.est_reste ? d.est_reste.toLocaleString('fr-FR') : '?';
+            const ecoHtml = d.est_eco ? d.est_eco.toLocaleString('fr-FR') : '?';
+            const roiHtml = d.est_roi || '?';
+
+            return `
+                <div class="popup-travaux">
+                    <div class="travaux-title">Estimation travaux recommandes</div>
+                    ${lines}
+                </div>
+                <div class="popup-travaux-summary">
+                    <div style="font-weight:bold;font-size:12px;color:#1565c0;margin-bottom:4px">Bilan financier renovation</div>
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <div class="sv sv-total">${totalHtml} EUR</div>
+                            <div class="sl">Total travaux</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="sv sv-aides">${aidesHtml} EUR</div>
+                            <div class="sl">Aides (MPR + CEE)</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="sv sv-reste">${resteHtml} EUR</div>
+                            <div class="sl">Reste a charge</div>
+                        </div>
+                        <div class="summary-item">
+                            <div class="sv sv-eco">${ecoHtml} EUR/an</div>
+                            <div class="sl">Economie annuelle</div>
+                        </div>
+                    </div>
+                    <div style="text-align:center;margin-top:6px;padding-top:4px;border-top:1px solid rgba(0,0,0,0.1)">
+                        <span class="sv sv-roi" style="font-size:14px">ROI : ${roiHtml} ans</span>
+                    </div>
+                </div>
+            `;
+        }
+
+        // ========== ITINERARY (Nearest Neighbor) ==========
+
+        function haversineDistance(lat1, lng1, lat2, lng2) {
+            const R = 6371000; // meters
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLng = (lng2 - lng1) * Math.PI / 180;
+            const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
+                      Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                      Math.sin(dLng/2) * Math.sin(dLng/2);
+            return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+        }
+
+        function nearestNeighborRoute(points) {
+            if (points.length <= 1) return points.map((_, i) => i);
+
+            const n = points.length;
+            const visited = new Array(n).fill(false);
+            const order = [];
+
+            // Start from centroid-nearest point
+            const avgLat = points.reduce((s, p) => s + p.lat, 0) / n;
+            const avgLng = points.reduce((s, p) => s + p.lng, 0) / n;
+            let startIdx = 0;
+            let minDist = Infinity;
+            for (let i = 0; i < n; i++) {
+                const d = haversineDistance(avgLat, avgLng, points[i].lat, points[i].lng);
+                if (d < minDist) { minDist = d; startIdx = i; }
+            }
+
+            let current = startIdx;
+            visited[current] = true;
+            order.push(current);
+
+            for (let step = 1; step < n; step++) {
+                let nearest = -1;
+                let nearestDist = Infinity;
+                for (let i = 0; i < n; i++) {
+                    if (visited[i]) continue;
+                    const d = haversineDistance(points[current].lat, points[current].lng, points[i].lat, points[i].lng);
+                    if (d < nearestDist) { nearestDist = d; nearest = i; }
+                }
+                visited[nearest] = true;
+                order.push(nearest);
+                current = nearest;
+            }
+
+            return order;
+        }
+
+        function generateItinerary() {
+            if (currentZoneData.length === 0) return;
+
+            // Clear previous itinerary
+            clearItinerary();
+
+            // Calculate route
+            const order = nearestNeighborRoute(currentZoneData);
+            itineraryOrder = order;
+
+            // Draw polyline
+            const latlngs = order.map(i => [currentZoneData[i].lat, currentZoneData[i].lng]);
+            itineraryLayer = L.polyline(latlngs, {
+                color: '#27ae60',
+                weight: 3,
+                opacity: 0.8,
+                dashArray: '10, 8'
+            }).addTo(map);
+
+            // Add number markers
+            itineraryNumbersLayer = L.layerGroup();
+            order.forEach((dataIdx, visitIdx) => {
+                const d = currentZoneData[dataIdx];
+                const marker = L.marker([d.lat, d.lng], {
+                    icon: L.divIcon({
+                        className: '',
+                        html: `<div class="itin-number-icon">${visitIdx + 1}</div>`,
+                        iconSize: [26, 26],
+                        iconAnchor: [13, 13]
+                    }),
+                    zIndexOffset: 1000
+                });
+                itineraryNumbersLayer.addLayer(marker);
+            });
+            itineraryNumbersLayer.addTo(map);
+
+            // Calculate total distance
+            let totalDist = 0;
+            for (let i = 1; i < order.length; i++) {
+                const p1 = currentZoneData[order[i-1]];
+                const p2 = currentZoneData[order[i]];
+                totalDist += haversineDistance(p1.lat, p1.lng, p2.lat, p2.lng);
+            }
+
+            // Walking speed ~4km/h
+            const walkMinutes = Math.round(totalDist / 4000 * 60);
+
+            // Show info
+            document.getElementById('itin-stops').textContent = order.length;
+            document.getElementById('itin-distance').textContent = totalDist < 1000
+                ? Math.round(totalDist) + ' m'
+                : (totalDist / 1000).toFixed(1) + ' km';
+            document.getElementById('itin-time').textContent = walkMinutes < 60
+                ? walkMinutes + ' min'
+                : Math.floor(walkMinutes/60) + 'h' + (walkMinutes%60 ? String(walkMinutes%60).padStart(2,'0') : '');
+            document.getElementById('itinerary-info').classList.add('visible');
+
+            // Sort by visit order
+            document.getElementById('zone-sort-select').value = 'visit';
+            sortZoneAddresses();
+
+            // Fit map to itinerary
+            map.fitBounds(itineraryLayer.getBounds(), { padding: [50, 50] });
+        }
+
+        function clearItinerary() {
+            if (itineraryLayer) { map.removeLayer(itineraryLayer); itineraryLayer = null; }
+            if (itineraryNumbersLayer) { map.removeLayer(itineraryNumbersLayer); itineraryNumbersLayer = null; }
+            itineraryOrder = [];
+            document.getElementById('itinerary-info').classList.remove('visible');
+        }
+
+        // ========== GRID ZONES SYSTEM ==========
+
+        function toggleZones() {
+            zonesEnabled = !zonesEnabled;
+            const btn = document.getElementById('btn-toggle-zones');
+            const opts = document.getElementById('grid-options');
+            const legendZones = document.getElementById('legend-zones');
+
+            if (zonesEnabled) {
+                btn.textContent = 'Desactiver le quadrillage';
+                btn.classList.add('active');
+                opts.style.display = 'block';
+                legendZones.style.display = 'block';
+                drawGrid();
+            } else {
+                btn.textContent = 'Activer le quadrillage';
+                btn.classList.remove('active');
+                opts.style.display = 'none';
+                legendZones.style.display = 'none';
+                clearGrid();
+                closeZonePanel();
+            }
+        }
+
+        function setGridSize(size) {
+            gridSize = size;
+            document.querySelectorAll('.grid-size-btn').forEach(b => {
+                b.classList.toggle('active', parseFloat(b.dataset.size) === size);
+            });
+            if (zonesEnabled) drawGrid();
+        }
+
+        function clearGrid() {
+            if (gridLayer) { map.removeLayer(gridLayer); gridLayer = null; }
+            if (gridLabelsLayer) { map.removeLayer(gridLabelsLayer); gridLabelsLayer = null; }
+            if (selectedZoneRect) { map.removeLayer(selectedZoneRect); selectedZoneRect = null; }
+        }
+
+        function drawGrid() {
+            clearGrid();
+            const zoom = map.getZoom();
+
+            // Only show grid at zoom 11+
+            if (zoom < 11) {
+                return;
+            }
+
+            const bounds = map.getBounds();
+            const south = bounds.getSouth();
+            const north = bounds.getNorth();
+            const west = bounds.getWest();
+            const east = bounds.getEast();
+
+            // Snap to grid
+            const startLat = Math.floor(south / gridSize) * gridSize;
+            const startLng = Math.floor(west / gridSize) * gridSize;
+
+            gridLayer = L.layerGroup();
+            gridLabelsLayer = L.layerGroup();
+
+            // Limit cells to avoid perf issues
+            const maxCells = 2000;
+            const cols = Math.ceil((east - startLng) / gridSize);
+            const rows = Math.ceil((north - startLat) / gridSize);
+            if (cols * rows > maxCells) {
+                gridLayer.addTo(map);
+                return;
+            }
+
+            // Build spatial index for visible filtered data
+            const visibleData = filteredData.filter(d =>
+                d.lat >= south && d.lat <= north && d.lng >= west && d.lng <= east
+            );
+
+            for (let lat = startLat; lat < north; lat += gridSize) {
+                for (let lng = startLng; lng < east; lng += gridSize) {
+                    const cellBounds = [[lat, lng], [lat + gridSize, lng + gridSize]];
+
+                    // Count prospects in this cell
+                    const cellData = visibleData.filter(d =>
+                        d.lat >= lat && d.lat < lat + gridSize &&
+                        d.lng >= lng && d.lng < lng + gridSize
+                    );
+                    const count = cellData.length;
+
+                    // Color by density
+                    let fillColor, fillOpacity, weight;
+                    if (count >= 10) {
+                        fillColor = '#e94560'; fillOpacity = 0.35; weight = 1.5;
+                    } else if (count >= 5) {
+                        fillColor = '#e94560'; fillOpacity = 0.2; weight = 1;
+                    } else if (count >= 1) {
+                        fillColor = '#e94560'; fillOpacity = 0.1; weight = 0.8;
+                    } else {
+                        fillColor = '#cccccc'; fillOpacity = 0.03; weight = 0.3;
+                    }
+
+                    const rect = L.rectangle(cellBounds, {
+                        color: '#e94560',
+                        weight: weight,
+                        opacity: 0.4,
+                        fillColor: fillColor,
+                        fillOpacity: fillOpacity,
+                        className: 'grid-cell'
+                    });
+
+                    // Store cell info
+                    rect._cellData = cellData;
+                    rect._cellBounds = { lat, lng, latEnd: lat + gridSize, lngEnd: lng + gridSize };
+
+                    rect.on('click', function() {
+                        openZonePanel(this._cellData, this._cellBounds);
+                        highlightZone(this._cellBounds);
+                    });
+
+                    rect.on('mouseover', function() {
+                        if (this._cellData.length > 0) {
+                            this.setStyle({ fillOpacity: fillOpacity + 0.2, weight: 2 });
+                        }
+                    });
+                    rect.on('mouseout', function() {
+                        this.setStyle({ fillOpacity: fillOpacity, weight: weight });
+                    });
+
+                    gridLayer.addLayer(rect);
+
+                    // Add count label for cells with prospects at higher zoom
+                    if (count > 0 && zoom >= 13) {
+                        const label = L.marker([lat + gridSize/2, lng + gridSize/2], {
+                            icon: L.divIcon({
+                                className: '',
+                                html: `<div class="grid-label">${count}</div>`,
+                                iconSize: [40, 20],
+                                iconAnchor: [20, 10]
+                            }),
+                            interactive: false
+                        });
+                        gridLabelsLayer.addLayer(label);
+                    }
+                }
+            }
+
+            gridLayer.addTo(map);
+            gridLabelsLayer.addTo(map);
+        }
+
+        function highlightZone(cellBounds) {
+            if (selectedZoneRect) map.removeLayer(selectedZoneRect);
+            selectedZoneRect = L.rectangle(
+                [[cellBounds.lat, cellBounds.lng], [cellBounds.latEnd, cellBounds.lngEnd]],
+                { color: '#fff', weight: 3, opacity: 1, fillColor: '#e94560', fillOpacity: 0.3, dashArray: '8,4' }
+            ).addTo(map);
+        }
+
+        function openZonePanel(data, cellBounds) {
+            const panel = document.getElementById('zone-panel');
+            panel.classList.add('open');
+            clearItinerary();
+
+            // Store for itinerary and sorting
+            currentZoneData = data.slice();
+
+            // Sort by score descending (best prospects first)
+            currentZoneData.sort((a, b) => b.sc - a.sc);
+
+            // Stats
+            document.getElementById('zone-total').textContent = data.length;
+            document.getElementById('zone-hot').textContent = data.filter(d => d.sc >= 80).length;
+            document.getElementById('zone-dpe-g').textContent = data.filter(d => d.dpe === 'G').length;
+            document.getElementById('zone-proprio').textContent = data.filter(d => d.prop).length;
+            document.getElementById('zone-addr-count').textContent = data.length;
+
+            // Avg conversion score
+            const convScores = data.map(d => getConvScore(d));
+            const avgConv = convScores.length ? Math.round(convScores.reduce((a,b)=>a+b,0)/convScores.length) : 0;
+            document.getElementById('zone-avg-conv').textContent = avgConv;
+
+            // Avg travaux
+            const travauxVals = data.filter(d => d.est_total).map(d => d.est_total);
+            const avgTravaux = travauxVals.length ? Math.round(travauxVals.reduce((a,b)=>a+b,0)/travauxVals.length) : 0;
+            document.getElementById('zone-avg-travaux').textContent = avgTravaux > 0 ? (avgTravaux/1000).toFixed(0) + 'k' : '0';
+
+            // Title
+            if (data.length > 0) {
+                const mainCommune = mostFrequent(data.map(d => d.com));
+                document.getElementById('zone-title').textContent = `Zone : ${mainCommune || 'Sans nom'}`;
+            } else {
+                document.getElementById('zone-title').textContent = 'Zone vide';
+            }
+
+            // Reset sort
+            document.getElementById('zone-sort-select').value = 'score';
+            renderZoneAddresses();
+        }
+
+        function sortZoneAddresses() {
+            const sortBy = document.getElementById('zone-sort-select').value;
+
+            if (sortBy === 'visit' && itineraryOrder.length > 0) {
+                // Reorder currentZoneData by itinerary order
+                const ordered = itineraryOrder.map(i => currentZoneData[i]);
+                currentZoneData = ordered;
+                // Reset itineraryOrder to identity since we reordered
+                itineraryOrder = currentZoneData.map((_, i) => i);
+            } else if (sortBy === 'score') {
+                currentZoneData.sort((a, b) => b.sc - a.sc);
+            } else if (sortBy === 'conv') {
+                currentZoneData.sort((a, b) => getConvScore(b) - getConvScore(a));
+            } else if (sortBy === 'cost') {
+                currentZoneData.sort((a, b) => (b.cout || 0) - (a.cout || 0));
+            } else if (sortBy === 'travaux') {
+                currentZoneData.sort((a, b) => (b.est_total || 0) - (a.est_total || 0));
+            } else if (sortBy === 'roi') {
+                currentZoneData.sort((a, b) => (a.est_roi || 999) - (b.est_roi || 999));
+            }
+
+            renderZoneAddresses();
+        }
+
+        function renderZoneAddresses() {
+            const container = document.getElementById('zone-addresses');
+            container.innerHTML = '';
+            const sortBy = document.getElementById('zone-sort-select').value;
+            const showVisitOrder = sortBy === 'visit' && itineraryOrder.length > 0;
+
+            if (currentZoneData.length === 0) {
+                container.innerHTML = '<div style="text-align:center;color:#666;padding:20px">Aucun prospect dans cette zone</div>';
+                return;
+            }
+
+            currentZoneData.forEach((d, i) => {
+                const scoreClass = d.sc >= 80 ? 'hot' : d.sc >= 60 ? 'warm' : d.sc >= 40 ? 'tepid' : 'cold';
+                const scoreLabel = d.sc >= 80 ? 'HOT' : d.sc >= 60 ? 'WARM' : d.sc >= 40 ? 'TEPID' : 'COLD';
+                const borderClass = d.dpe === 'G' ? 'dpe-g-border' : 'dpe-f-border';
+                const cs = getConvScore(d);
+                const flags = getFlags(d);
+
+                const div = document.createElement('div');
+                div.className = `address-item ${borderClass}`;
+                div.innerHTML = `
+                    ${showVisitOrder ? '<div class="visit-order">' + (i + 1) + '</div>' : ''}
+                    <div class="addr-top">
+                        <span>
+                            <span class="dpe-badge dpe-${d.dpe}" style="font-size:11px;padding:1px 6px">${d.dpe}</span>
+                            <span class="score-badge score-${scoreClass}" style="margin-left:4px">${scoreLabel} ${d.sc}</span>
+                            ${convBadgeHtml(cs)}
+                        </span>
+                    </div>
+                    ${flags.length > 0 ? '<div style="margin:3px 0">' + flags.map(f => flagToHtml(f)).join('') + '</div>' : ''}
+                    ${d.prop ? '<div style="font-weight:bold;color:#5dade2;font-size:12px;margin:2px 0">'+d.prop+'</div>' : ''}
+                    <div class="addr-address">${d.adr || 'Adresse non renseignee'}</div>
+                    <div class="addr-details">
+                        <span>${d.typ || ''}</span>
+                        <span>${d.surf ? d.surf + ' m2' : ''}</span>
+                        <span style="color:#e94560;font-weight:bold">${d.cout ? d.cout.toLocaleString('fr-FR') + ' EUR/an' : ''}</span>
+                    </div>
+                    ${d.est_total ? '<div class="addr-details"><span style="color:#27ae60">Travaux: ' + d.est_total.toLocaleString('fr-FR') + ' EUR</span><span style="color:#2980b9">Aides: ' + (d.est_aides||0).toLocaleString('fr-FR') + ' EUR</span><span style="color:#e65100;font-weight:bold">Reste: ' + (d.est_reste||0).toLocaleString('fr-FR') + ' EUR</span></div>' : ''}
+                    ${d.est_eco ? '<div class="addr-details"><span style="color:#2e7d32">Eco: ' + d.est_eco.toLocaleString('fr-FR') + ' EUR/an</span><span style="color:#6a1b9a">ROI: ' + (d.est_roi||'?') + ' ans</span></div>' : ''}
+                `;
+
+                // Click to fly to the point and open popup
+                div.addEventListener('click', () => {
+                    map.setView([d.lat, d.lng], 18);
+                    markers.eachLayer(layer => {
+                        if (layer.getLatLng && layer.getLatLng().lat === d.lat && layer.getLatLng().lng === d.lng) {
+                            layer.openPopup();
+                        }
+                    });
+                });
+
+                container.appendChild(div);
+            });
+        }
+
+        function closeZonePanel() {
+            document.getElementById('zone-panel').classList.remove('open');
+            if (selectedZoneRect) { map.removeLayer(selectedZoneRect); selectedZoneRect = null; }
+            clearItinerary();
+            currentZoneData = [];
+        }
+
+        function mostFrequent(arr) {
+            const freq = {};
+            arr.forEach(v => { if(v) freq[v] = (freq[v]||0)+1; });
+            let max = 0, result = '';
+            for (const [k,v] of Object.entries(freq)) {
+                if (v > max) { max = v; result = k; }
+            }
+            return result;
+        }
+
+        // Redraw grid on map move
+        map.on('moveend', () => { if (zonesEnabled) drawGrid(); });
+
+        // ========== END GRID ZONES ==========
+
+        // Create marker
+        function createMarker(d) {
+            const color = DPE_COLORS[d.dpe] || '#999';
+            const radius = Math.min(Math.max((d.cout || 2000) / 500, 4), 12);
+
+            const marker = L.circleMarker([d.lat, d.lng], {
+                radius: radius,
+                fillColor: color,
+                color: '#fff',
+                weight: 1.5,
+                opacity: 0.9,
+                fillOpacity: 0.8
+            });
+
+            const scoreClass = d.sc >= 80 ? 'hot' : d.sc >= 60 ? 'warm' : d.sc >= 40 ? 'tepid' : 'cold';
+            const scoreLabel = d.sc >= 80 ? 'HOT' : d.sc >= 60 ? 'WARM' : d.sc >= 40 ? 'TEPID' : 'COLD';
+            const cs = getConvScore(d);
+            const flags = getFlags(d);
+
+            const ownerHtml = d.prop
+                ? `<div style="background:#0f3460;color:white;padding:6px 10px;border-radius:6px;margin-bottom:8px;font-size:12px">
+                    <div style="font-weight:bold">${d.prop}</div>
+                    <div style="opacity:0.7;font-size:11px">${d.prop_type || ''} ${d.siren ? '- SIREN ' + d.siren : ''}</div>
+                   </div>`
+                : '';
+
+            const flagsHtml = flags.length > 0
+                ? `<div class="popup-flags">${flags.map(f => flagToHtml(f)).join('')}</div>`
+                : '';
+
+            const isolationDetail = (d.iso_m || d.iso_f || d.iso_pb || d.iso_ph)
+                ? `<div style="background:#fff5f5;padding:6px 10px;border-radius:6px;margin:6px 0;font-size:11px">
+                    <div style="font-weight:bold;color:#e3001b;margin-bottom:4px">Detail isolation</div>
+                    ${d.iso_m ? '<div>Murs : <b>'+d.iso_m+'</b></div>' : ''}
+                    ${d.iso_f ? '<div>Fenetres : <b>'+d.iso_f+'</b></div>' : ''}
+                    ${d.iso_pb ? '<div>Plancher bas : <b>'+d.iso_pb+'</b></div>' : ''}
+                    ${d.iso_ph ? '<div>Plancher haut : <b>'+d.iso_ph+'</b></div>' : ''}
+                    ${d.ubat ? '<div>Ubat : <b>'+d.ubat.toFixed(2)+' W/m2.K</b></div>' : ''}
+                   </div>`
+                : '';
+
+            const deperditionsHtml = (d.dep_m || d.dep_v || d.dep_pb || d.dep_ph || d.dep_pt)
+                ? `<div style="background:#fff8e1;padding:6px 10px;border-radius:6px;margin:6px 0;font-size:11px">
+                    <div style="font-weight:bold;color:#f07d02;margin-bottom:4px">Deperditions thermiques (W/K)</div>
+                    ${d.dep_m ? '<div>Murs : <b>'+Math.round(d.dep_m)+'</b></div>' : ''}
+                    ${d.dep_v ? '<div>Vitres : <b>'+Math.round(d.dep_v)+'</b></div>' : ''}
+                    ${d.dep_pb ? '<div>Plancher bas : <b>'+Math.round(d.dep_pb)+'</b></div>' : ''}
+                    ${d.dep_ph ? '<div>Plancher haut : <b>'+Math.round(d.dep_ph)+'</b></div>' : ''}
+                    ${d.dep_pt ? '<div>Ponts thermiques : <b>'+Math.round(d.dep_pt)+'</b></div>' : ''}
+                   </div>`
+                : '';
+
+            const costsDetail = (d.c_ch || d.c_ecs || d.c_ecl)
+                ? `<div style="font-size:11px;margin-top:4px">
+                    ${d.c_ch ? '<span style="margin-right:8px">Chauffage: <b>'+Math.round(d.c_ch)+' EUR</b></span>' : ''}
+                    ${d.c_ecs ? '<span style="margin-right:8px">ECS: <b>'+Math.round(d.c_ecs)+' EUR</b></span>' : ''}
+                    ${d.c_ecl ? '<span>Eclairage: <b>'+Math.round(d.c_ecl)+' EUR</b></span>' : ''}
+                   </div>`
+                : '';
+
+            const constructionInfo = d.an ? `${d.per || ''} (${d.an})` : (d.per || 'N/C');
+
+            marker.bindPopup(`
+                <div class="popup-content" style="min-width:280px;max-height:500px;overflow-y:auto">
+                    <h3>
+                        <span class="dpe-badge dpe-${d.dpe}">${d.dpe}</span>
+                        ${d.typ || ''} - ${d.com || ''}
+                        <span class="score-badge score-${scoreClass}">${scoreLabel} ${d.sc}</span>
+                        ${convBadgeHtml(cs)}
+                    </h3>
+                    ${flagsHtml}
+                    ${ownerHtml}
+                    <div class="popup-cost-highlight">
+                        <div class="amount">${d.cout ? d.cout.toLocaleString('fr-FR') + ' EUR/an' : 'N/C'}</div>
+                        <div class="label">Cout energetique annuel</div>
+                        ${costsDetail}
+                    </div>
+                    ${travauxPopupHtml(d)}
+                    <div class="popup-row"><span class="popup-label">Surface</span><span class="popup-value">${d.surf ? d.surf + ' m2' : 'N/C'}${d.hsp ? ' (h:'+d.hsp+'m)' : ''}${d.niv ? ' - '+d.niv+' niv.' : ''}</span></div>
+                    <div class="popup-row"><span class="popup-label">Conso</span><span class="popup-value">${d.conso ? d.conso + ' kWh/m2/an' : 'N/C'}</span></div>
+                    <div class="popup-row"><span class="popup-label">Construction</span><span class="popup-value">${constructionInfo}</span></div>
+                    <div class="popup-row"><span class="popup-label">Chauffage</span><span class="popup-value">${d.desc_ch || d.chauf || 'N/C'}</span></div>
+                    <div class="popup-row"><span class="popup-label">Eau chaude</span><span class="popup-value">${d.desc_ecs || 'N/C'}</span></div>
+                    <div class="popup-row"><span class="popup-label">Ventilation</span><span class="popup-value">${d.vent || 'N/C'}</span></div>
+                    <div class="popup-row"><span class="popup-label">Isolation globale</span><span class="popup-value">${d.iso || 'N/C'}</span></div>
+                    <div class="popup-row"><span class="popup-label">GES</span><span class="popup-value">${d.ges || 'N/C'}</span></div>
+                    ${isolationDetail}
+                    ${deperditionsHtml}
+                    <div class="popup-address">${d.adr || 'Adresse non renseignee'}</div>
+                </div>
+            `, { maxWidth: 340 });
+
+            return marker;
+        }
+
+        function getScoreCategory(sc) {
+            if (sc >= 80) return 'hot';
+            if (sc >= 60) return 'warm';
+            if (sc >= 40) return 'tepid';
+            return 'cold';
+        }
+
+        function applyFilters() {
+            const showF = document.getElementById('filter-F').checked;
+            const showG = document.getElementById('filter-G').checked;
+
+            const depts = [...document.querySelectorAll('.dept-filter:checked')].map(c => c.value);
+            const types = [...document.querySelectorAll('.type-filter:checked')].map(c => c.value);
+            const scores = [...document.querySelectorAll('.score-filter:checked')].map(c => c.value);
+
+            const minSurface = parseInt(document.getElementById('filter-surface').value);
+            const minCout = parseInt(document.getElementById('filter-cout').value);
+            const minConv = parseInt(document.getElementById('filter-conv').value);
+            const commune = document.getElementById('filter-commune').value;
+
+            filteredData = allData.filter(d => {
+                if (d.dpe === 'F' && !showF) return false;
+                if (d.dpe === 'G' && !showG) return false;
+                if (!depts.includes(d.dep)) return false;
+                if (!types.includes(d.typ)) return false;
+                if (!scores.includes(getScoreCategory(d.sc))) return false;
+                if (d.surf && d.surf < minSurface) return false;
+                if (d.cout && d.cout < minCout) return false;
+                if (minConv > 0 && getConvScore(d) < minConv) return false;
+                if (commune && d.com !== commune) return false;
+                return true;
+            });
+
+            markers.clearLayers();
+            const newMarkers = filteredData.map(d => createMarker(d));
+            markers.addLayers(newMarkers);
+
+            updateStats();
+            if (zonesEnabled) drawGrid();
+        }
+
+        function updateStats() {
+            const total = filteredData.length;
+            const maisons = filteredData.filter(d => d.typ === 'maison').length;
+            const apparts = filteredData.filter(d => d.typ === 'appartement').length;
+            const couts = filteredData.filter(d => d.cout).map(d => d.cout);
+            const avgCout = couts.length ? Math.round(couts.reduce((a,b)=>a+b,0)/couts.length) : 0;
+            const proprios = filteredData.filter(d => d.prop).length;
+
+            // Travaux moyen
+            const travauxVals = filteredData.filter(d => d.est_total).map(d => d.est_total);
+            const avgTravaux = travauxVals.length ? Math.round(travauxVals.reduce((a,b)=>a+b,0)/travauxVals.length) : 0;
+
+            // Conv score moyen
+            const convVals = filteredData.map(d => getConvScore(d));
+            const avgConv = convVals.length ? Math.round(convVals.reduce((a,b)=>a+b,0)/convVals.length) : 0;
+
+            document.getElementById('stat-total').textContent = total.toLocaleString('fr-FR');
+            document.getElementById('stat-maisons').textContent = maisons.toLocaleString('fr-FR');
+            document.getElementById('stat-apparts').textContent = apparts.toLocaleString('fr-FR');
+            document.getElementById('stat-proprio').textContent = proprios.toLocaleString('fr-FR');
+            document.getElementById('stat-cout').textContent = avgCout.toLocaleString('fr-FR') + ' EUR';
+            document.getElementById('stat-travaux').textContent = avgTravaux > 0 ? avgTravaux.toLocaleString('fr-FR') + ' EUR' : '-';
+            document.getElementById('stat-conv').textContent = avgConv + '/100';
+        }
+
+        function resetFilters() {
+            document.getElementById('filter-F').checked = true;
+            document.getElementById('filter-G').checked = true;
+            document.querySelectorAll('.dept-filter, .type-filter, .score-filter').forEach(c => c.checked = true);
+            document.getElementById('filter-surface').value = 0;
+            document.getElementById('filter-cout').value = 0;
+            document.getElementById('filter-conv').value = 0;
+            document.getElementById('filter-commune').value = '';
+            document.getElementById('surface-val').textContent = '0 m2';
+            document.getElementById('cout-val').textContent = '0 EUR';
+            document.getElementById('conv-val').textContent = '0';
+            applyFilters();
+            map.setView([48.2, -2.8], 8);
+        }
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            document.getElementById('toggle-sidebar').classList.toggle('collapsed');
+        }
+
+        document.getElementById('filter-surface').addEventListener('input', e => {
+            document.getElementById('surface-val').textContent = e.target.value + ' m2';
+        });
+        document.getElementById('filter-cout').addEventListener('input', e => {
+            document.getElementById('cout-val').textContent = parseInt(e.target.value).toLocaleString('fr-FR') + ' EUR';
+        });
+        document.getElementById('filter-conv').addEventListener('input', e => {
+            document.getElementById('conv-val').textContent = e.target.value;
+        });
+
+        document.querySelectorAll('#sidebar input, #sidebar select').forEach(el => {
+            el.addEventListener('change', applyFilters);
+        });
+        document.getElementById('filter-surface').addEventListener('input', applyFilters);
+        document.getElementById('filter-cout').addEventListener('input', applyFilters);
+        document.getElementById('filter-conv').addEventListener('input', applyFilters);
+
+        // Load data
+        fetch('data/prospects.json')
+            .then(r => r.json())
+            .then(data => {
+                allData = data.filter(d => d.lat && d.lng);
+
+                // Build communes list
+                allData.forEach(d => { if (d.com) communes.add(d.com); });
+                const communeSelect = document.getElementById('filter-commune');
+                [...communes].sort().forEach(c => {
+                    const count = allData.filter(d => d.com === c).length;
+                    const opt = document.createElement('option');
+                    opt.value = c;
+                    opt.textContent = `${c} (${count})`;
+                    communeSelect.appendChild(opt);
+                });
+
+                document.getElementById('loading').style.display = 'none';
+                applyFilters();
+            })
+            .catch(err => {
+                document.getElementById('load-progress').textContent = 'Erreur: ' + err.message;
+            });
+    </script>
+</body>
+</html>

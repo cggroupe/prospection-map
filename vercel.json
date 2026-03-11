@@ -1,0 +1,13 @@
+{
+  "buildCommand": "",
+  "outputDirectory": ".",
+  "headers": [
+    {
+      "source": "/data/(.*)",
+      "headers": [
+        { "key": "Content-Encoding", "value": "gzip" },
+        { "key": "Cache-Control", "value": "public, max-age=86400" }
+      ]
+    }
+  ]
+}
