@@ -1,10 +1,14 @@
 {
   "buildCommand": "",
   "outputDirectory": ".",
+  "rewrites": [
+    { "source": "/data/prospects.json", "destination": "/data/prospects.json.gz" }
+  ],
   "headers": [
     {
-      "source": "/data/(.*)",
+      "source": "/data/prospects.json.gz",
       "headers": [
+        { "key": "Content-Type", "value": "application/json" },
         { "key": "Content-Encoding", "value": "gzip" },
         { "key": "Cache-Control", "value": "public, max-age=86400" }
       ]

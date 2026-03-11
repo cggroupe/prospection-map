@@ -525,6 +525,167 @@
             border: 2px solid white;
             box-shadow: 0 2px 6px rgba(0,0,0,0.4);
         }
+
+        /* ========== MOBILE RESPONSIVE ========== */
+        @media (max-width: 768px) {
+            /* Sidebar: bottom sheet instead of left panel */
+            #sidebar {
+                width: 100%;
+                height: 55vh;
+                top: auto;
+                bottom: 0;
+                left: 0;
+                border-radius: 18px 18px 0 0;
+                transition: transform 0.3s ease;
+                overflow-y: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            #sidebar.collapsed { transform: translateY(100%); }
+
+            /* Drag handle for bottom sheet */
+            #sidebar::before {
+                content: '';
+                display: block;
+                width: 40px;
+                height: 5px;
+                background: #555;
+                border-radius: 3px;
+                margin: 10px auto 0;
+            }
+
+            /* Map takes full screen */
+            #map { height: 100vh; }
+
+            /* Toggle button: bottom-left corner */
+            #toggle-sidebar {
+                top: auto;
+                bottom: 12px;
+                left: 12px;
+                border-radius: 50%;
+                width: 48px;
+                height: 48px;
+                padding: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 22px;
+                box-shadow: 0 2px 10px rgba(0,0,0,0.4);
+                transition: bottom 0.3s;
+            }
+            #toggle-sidebar.collapsed {
+                left: 12px;
+                bottom: 12px;
+            }
+            /* When sidebar open, move toggle above it */
+            #sidebar:not(.collapsed) ~ #toggle-sidebar {
+                bottom: calc(55vh + 8px);
+            }
+
+            /* Sidebar header compact */
+            .sidebar-header { padding: 12px 16px; }
+            .sidebar-header h1 { font-size: 16px; }
+
+            /* Filter sections tighter */
+            .filter-section { padding: 10px 16px; }
+            .filter-section h3 { font-size: 12px; margin-bottom: 6px; }
+
+            /* Stats row compact */
+            .stats-box { padding: 10px 16px; }
+            .stat-row { font-size: 12px; }
+
+            /* Buttons full width */
+            .btn-reset, .btn-zones, .btn-itinerary {
+                width: calc(100% - 32px);
+                margin-left: 16px;
+                margin-right: 16px;
+                padding: 12px;
+                font-size: 15px;
+            }
+
+            /* Grid size buttons bigger touch targets */
+            .grid-size-btn { padding: 10px 6px; font-size: 13px; }
+
+            /* Zone panel: also bottom sheet */
+            #zone-panel {
+                width: 100%;
+                height: 60vh;
+                top: auto;
+                bottom: 0;
+                right: 0;
+                border-radius: 18px 18px 0 0;
+                transform: translateY(100%);
+            }
+            #zone-panel.open { transform: translateY(0); }
+
+            /* Zone panel drag handle */
+            #zone-panel::before {
+                content: '';
+                display: block;
+                width: 40px;
+                height: 5px;
+                background: #555;
+                border-radius: 3px;
+                margin: 10px auto 0;
+            }
+
+            /* Zone stats cards: 3 columns on mobile */
+            .zone-stats .zone-stat-grid {
+                grid-template-columns: 1fr 1fr 1fr;
+                gap: 6px;
+            }
+            .zone-stat-card { padding: 8px 4px; }
+            .zone-stat-card .num { font-size: 18px; }
+            .zone-stat-card .lbl { font-size: 10px; }
+
+            /* Legend: smaller, bottom-left above toggle */
+            .legend {
+                bottom: 70px;
+                right: 8px;
+                padding: 8px 10px;
+                font-size: 11px;
+                max-width: 140px;
+            }
+
+            /* Popup content: narrower */
+            .leaflet-popup-content-wrapper {
+                max-width: 280px !important;
+            }
+            .leaflet-popup-content {
+                max-width: 260px !important;
+                font-size: 12px;
+            }
+
+            /* Address items: more touch-friendly */
+            .address-item { padding: 12px 14px; margin-bottom: 8px; }
+            .address-item .addr-address { font-size: 14px; }
+
+            /* Checkbox/label bigger touch targets */
+            .filter-group label {
+                padding: 6px 0;
+                font-size: 14px;
+                min-height: 36px;
+            }
+            .filter-group input[type="checkbox"] {
+                width: 20px;
+                height: 20px;
+            }
+
+            /* Select and range inputs bigger */
+            select, input[type="range"] {
+                padding: 10px 12px;
+                font-size: 14px;
+            }
+
+            /* Loading screen */
+            #loading h2 { font-size: 18px; }
+        }
+
+        /* Small phones */
+        @media (max-width: 380px) {
+            #sidebar { height: 50vh; }
+            .sidebar-header h1 { font-size: 14px; }
+            .zone-stats .zone-stat-grid { grid-template-columns: 1fr 1fr; }
+        }
     </style>
 </head>
 <body>
@@ -1185,6 +1346,11 @@
             const panel = document.getElementById('zone-panel');
             panel.classList.add('open');
             clearItinerary();
+            // Mobile: close sidebar when zone panel opens
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.add('collapsed');
+                document.getElementById('toggle-sidebar').classList.add('collapsed');
+            }
 
             // Store for itinerary and sorting
             currentZoneData = data.slice();
@@ -1500,9 +1666,50 @@
         }
 
         function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('collapsed');
-            document.getElementById('toggle-sidebar').classList.toggle('collapsed');
+            const sidebar = document.getElementById('sidebar');
+            const btn = document.getElementById('toggle-sidebar');
+            sidebar.classList.toggle('collapsed');
+            btn.classList.toggle('collapsed');
+            // On mobile, close zone panel when opening sidebar
+            if (window.innerWidth <= 768 && !sidebar.classList.contains('collapsed')) {
+                closeZonePanel();
+            }
         }
+
+        // Mobile: start with sidebar collapsed
+        if (window.innerWidth <= 768) {
+            document.getElementById('sidebar').classList.add('collapsed');
+            document.getElementById('toggle-sidebar').classList.add('collapsed');
+        }
+
+        // Mobile: swipe down to close bottom sheets
+        (function() {
+            let startY = 0, currentY = 0, dragging = false;
+            const sidebar = document.getElementById('sidebar');
+            const zonePanel = document.getElementById('zone-panel');
+
+            function addSwipe(el, closeFn) {
+                el.addEventListener('touchstart', e => {
+                    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
+                    startY = e.touches[0].clientY;
+                    dragging = true;
+                }, { passive: true });
+                el.addEventListener('touchmove', e => {
+                    if (!dragging) return;
+                    currentY = e.touches[0].clientY;
+                }, { passive: true });
+                el.addEventListener('touchend', () => {
+                    if (dragging && currentY - startY > 60) closeFn();
+                    dragging = false;
+                }, { passive: true });
+            }
+
+            addSwipe(sidebar, () => {
+                sidebar.classList.add('collapsed');
+                document.getElementById('toggle-sidebar').classList.add('collapsed');
+            });
+            addSwipe(zonePanel, closeZonePanel);
+        })();
 
         document.getElementById('filter-surface').addEventListener('input', e => {
             document.getElementById('surface-val').textContent = e.target.value + ' m2';
