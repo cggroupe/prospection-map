@@ -526,72 +526,89 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.4);
         }
 
+        /* Mobile-only elements (hidden on desktop) */
+        .mobile-btn, .mobile-close-sidebar {
+            display: none;
+        }
+
         /* ========== MOBILE RESPONSIVE ========== */
         @media (max-width: 768px) {
-            /* Sidebar: bottom sheet with peek when collapsed */
+            #map { height: 100vh; }
+
+            /* Two fixed buttons: left = Filtres, right = Zones */
+            .mobile-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 6px;
+                position: fixed;
+                bottom: 16px;
+                z-index: 1002;
+                padding: 12px 18px;
+                border: none;
+                border-radius: 30px;
+                font-size: 14px;
+                font-weight: bold;
+                color: white;
+                box-shadow: 0 3px 12px rgba(0,0,0,0.4);
+                cursor: pointer;
+            }
+            #mobile-btn-filters {
+                left: 12px;
+                background: #1a1a2e;
+            }
+            #mobile-btn-zones {
+                right: 12px;
+                background: #0f3460;
+            }
+
+            /* Hide desktop toggle */
+            #toggle-sidebar { display: none; }
+
+            /* Sidebar: full-height overlay, hidden by default */
             #sidebar {
                 width: 100%;
-                height: 60vh;
-                top: auto;
-                bottom: 0;
+                height: 100vh;
+                top: 0;
                 left: 0;
-                border-radius: 18px 18px 0 0;
+                border-radius: 0;
                 transition: transform 0.3s ease;
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
             }
-            /* Collapsed = only peek bar visible (60px) */
-            #sidebar.collapsed { transform: translateY(calc(100% - 60px)); }
+            #sidebar.collapsed { transform: translateX(-100%); }
 
-            /* Drag handle for bottom sheet */
-            #sidebar::before {
-                content: '';
+            /* Close button inside sidebar on mobile */
+            .mobile-close-sidebar {
                 display: block;
+                position: sticky;
+                top: 0;
+                right: 0;
+                z-index: 10;
+                float: right;
+                margin: 12px 12px 0 0;
+                background: rgba(255,255,255,0.15);
+                border: none;
+                color: white;
+                font-size: 28px;
                 width: 40px;
-                height: 5px;
-                background: #555;
-                border-radius: 3px;
-                margin: 10px auto 0;
-            }
-
-            /* Peek bar: make header act as visible tab */
-            .sidebar-header {
+                height: 40px;
+                border-radius: 50%;
                 cursor: pointer;
-                position: relative;
-            }
-            .sidebar-header::after {
-                content: 'Glissez vers le haut pour filtrer';
-                display: block;
-                font-size: 11px;
-                opacity: 0.6;
-                margin-top: 4px;
-            }
-            #sidebar:not(.collapsed) .sidebar-header::after {
-                content: '';
-                display: none;
-            }
-
-            /* Map takes full screen */
-            #map { height: 100vh; }
-
-            /* Hide the hamburger toggle on mobile - sidebar peek replaces it */
-            #toggle-sidebar {
-                display: none;
+                line-height: 1;
             }
 
             /* Sidebar header compact */
             .sidebar-header { padding: 12px 16px; }
             .sidebar-header h1 { font-size: 16px; }
 
-            /* Filter sections tighter */
+            /* Filter sections */
             .filter-section { padding: 10px 16px; }
             .filter-section h3 { font-size: 12px; margin-bottom: 6px; }
-
-            /* Stats row compact */
             .stats-box { padding: 10px 16px; }
             .stat-row { font-size: 12px; }
 
-            /* Buttons full width */
+            /* Buttons */
             .btn-reset, .btn-zones, .btn-itinerary {
                 width: calc(100% - 32px);
                 margin-left: 16px;
@@ -599,34 +616,20 @@
                 padding: 12px;
                 font-size: 15px;
             }
-
-            /* Grid size buttons bigger touch targets */
             .grid-size-btn { padding: 10px 6px; font-size: 13px; }
 
-            /* Zone panel: also bottom sheet */
+            /* Zone panel: full-height overlay from right */
             #zone-panel {
                 width: 100%;
-                height: 60vh;
-                top: auto;
-                bottom: 0;
+                height: 100vh;
+                top: 0;
                 right: 0;
-                border-radius: 18px 18px 0 0;
-                transform: translateY(100%);
+                border-radius: 0;
+                transform: translateX(100%);
             }
-            #zone-panel.open { transform: translateY(0); }
+            #zone-panel.open { transform: translateX(0); }
 
-            /* Zone panel drag handle */
-            #zone-panel::before {
-                content: '';
-                display: block;
-                width: 40px;
-                height: 5px;
-                background: #555;
-                border-radius: 3px;
-                margin: 10px auto 0;
-            }
-
-            /* Zone stats cards: 3 columns on mobile */
+            /* Zone stats */
             .zone-stats .zone-stat-grid {
                 grid-template-columns: 1fr 1fr 1fr;
                 gap: 6px;
@@ -635,54 +638,28 @@
             .zone-stat-card .num { font-size: 18px; }
             .zone-stat-card .lbl { font-size: 10px; }
 
-            /* Legend: above the peek bar */
+            /* Legend */
             .legend {
-                bottom: 72px;
-                right: 8px;
-                padding: 8px 10px;
+                bottom: 70px;
+                right: auto;
+                left: 50%;
+                transform: translateX(-50%);
+                padding: 6px 10px;
                 font-size: 11px;
-                max-width: 140px;
             }
 
-            /* Popup content: narrower */
-            .leaflet-popup-content-wrapper {
-                max-width: 280px !important;
-            }
-            .leaflet-popup-content {
-                max-width: 260px !important;
-                font-size: 12px;
-            }
+            /* Popups */
+            .leaflet-popup-content-wrapper { max-width: 280px !important; }
+            .leaflet-popup-content { max-width: 260px !important; font-size: 12px; }
 
-            /* Address items: more touch-friendly */
+            /* Touch-friendly controls */
             .address-item { padding: 12px 14px; margin-bottom: 8px; }
             .address-item .addr-address { font-size: 14px; }
+            .filter-group label { padding: 6px 0; font-size: 14px; min-height: 36px; }
+            .filter-group input[type="checkbox"] { width: 20px; height: 20px; }
+            select, input[type="range"] { padding: 10px 12px; font-size: 14px; }
 
-            /* Checkbox/label bigger touch targets */
-            .filter-group label {
-                padding: 6px 0;
-                font-size: 14px;
-                min-height: 36px;
-            }
-            .filter-group input[type="checkbox"] {
-                width: 20px;
-                height: 20px;
-            }
-
-            /* Select and range inputs bigger */
-            select, input[type="range"] {
-                padding: 10px 12px;
-                font-size: 14px;
-            }
-
-            /* Loading screen */
             #loading h2 { font-size: 18px; }
-        }
-
-        /* Small phones */
-        @media (max-width: 380px) {
-            #sidebar { height: 50vh; }
-            .sidebar-header h1 { font-size: 14px; }
-            .zone-stats .zone-stat-grid { grid-template-columns: 1fr 1fr; }
         }
     </style>
 </head>
@@ -694,6 +671,7 @@
     </div>
 
     <div id="sidebar">
+        <button class="mobile-close-sidebar" onclick="toggleSidebar()">&times;</button>
         <div class="sidebar-header">
             <h1>Prospects Renovation Bretagne</h1>
             <p>Logements classes F et G</p>
@@ -809,6 +787,10 @@
     <button id="toggle-sidebar" onclick="toggleSidebar()">&#9776;</button>
 
     <div id="map"></div>
+
+    <!-- Mobile buttons -->
+    <button class="mobile-btn" id="mobile-btn-filters" onclick="mobileOpenFilters()">&#9776; Filtres</button>
+    <button class="mobile-btn" id="mobile-btn-zones" onclick="mobileOpenZones()">&#9638; Zones</button>
 
     <!-- Zone detail panel (right) -->
     <div id="zone-panel">
@@ -1664,14 +1646,21 @@
         }
 
         function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            document.getElementById('toggle-sidebar').classList.toggle('collapsed');
+        }
+
+        // Mobile: two button functions
+        function mobileOpenFilters() {
             const sidebar = document.getElementById('sidebar');
-            const btn = document.getElementById('toggle-sidebar');
-            sidebar.classList.toggle('collapsed');
-            btn.classList.toggle('collapsed');
-            // On mobile, close zone panel when opening sidebar
-            if (window.innerWidth <= 768 && !sidebar.classList.contains('collapsed')) {
-                closeZonePanel();
-            }
+            sidebar.classList.remove('collapsed');
+            closeZonePanel(); // close the other one
+        }
+        function mobileOpenZones() {
+            // Toggle zones grid on, then open zone panel info
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.add('collapsed');
+            if (!zonesEnabled) toggleZones();
         }
 
         // Mobile: start with sidebar collapsed
@@ -1679,63 +1668,6 @@
             document.getElementById('sidebar').classList.add('collapsed');
             document.getElementById('toggle-sidebar').classList.add('collapsed');
         }
-
-        // Mobile: swipe down to close bottom sheets
-        (function() {
-            let startY = 0, currentY = 0, dragging = false;
-            const sidebar = document.getElementById('sidebar');
-            const zonePanel = document.getElementById('zone-panel');
-
-            function addSwipe(el, closeFn) {
-                el.addEventListener('touchstart', e => {
-                    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
-                    startY = e.touches[0].clientY;
-                    dragging = true;
-                }, { passive: true });
-                el.addEventListener('touchmove', e => {
-                    if (!dragging) return;
-                    currentY = e.touches[0].clientY;
-                }, { passive: true });
-                el.addEventListener('touchend', () => {
-                    if (dragging && currentY - startY > 60) closeFn();
-                    dragging = false;
-                }, { passive: true });
-            }
-
-            // Swipe down = collapse, swipe up on collapsed = open
-            function addSwipeUpDown(el, closeFn, openFn) {
-                el.addEventListener('touchstart', e => {
-                    if (e.target.tagName === 'INPUT' || e.target.tagName === 'SELECT') return;
-                    startY = e.touches[0].clientY;
-                    dragging = true;
-                }, { passive: true });
-                el.addEventListener('touchmove', e => {
-                    if (!dragging) return;
-                    currentY = e.touches[0].clientY;
-                }, { passive: true });
-                el.addEventListener('touchend', () => {
-                    if (!dragging) { dragging = false; return; }
-                    const diff = currentY - startY;
-                    if (diff > 60) closeFn();
-                    else if (diff < -40 && openFn) openFn();
-                    dragging = false;
-                }, { passive: true });
-            }
-
-            addSwipeUpDown(sidebar, () => {
-                sidebar.classList.add('collapsed');
-            }, () => {
-                sidebar.classList.remove('collapsed');
-            });
-            addSwipe(zonePanel, closeZonePanel);
-
-            // Tap on header when collapsed = open
-            document.querySelector('.sidebar-header').addEventListener('click', () => {
-                if (window.innerWidth <= 768 && sidebar.classList.contains('collapsed')) {
-                    sidebar.classList.remove('collapsed');
-                }
-            });
-        })();
 
         document.getElementById('filter-surface').addEventListener('input', e => {
             document.getElementById('surface-val').textContent = e.target.value + ' m2';
