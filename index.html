@@ -1728,9 +1728,32 @@
         document.getElementById('filter-cout').addEventListener('input', applyFilters);
         document.getElementById('filter-conv').addEventListener('input', applyFilters);
 
-        // Load data
-        fetch('data/prospects.json')
-            .then(r => r.json())
+        // Load data (try JSON first, fallback to gzipped)
+        async function loadProspects() {
+            try {
+                // Try plain JSON (works on local server)
+                const r = await fetch('data/prospects.json');
+                const text = await r.text();
+                if (text.startsWith('[') || text.startsWith('{')) {
+                    return JSON.parse(text);
+                }
+            } catch(e) {}
+            // Fallback: fetch gzipped and decompress
+            const r = await fetch('data/prospects.json.gz');
+            const ds = new DecompressionStream('gzip');
+            const reader = r.body.pipeThrough(ds).getReader();
+            const chunks = [];
+            while (true) {
+                const { done, value } = await reader.read();
+                if (done) break;
+                chunks.push(value);
+            }
+            const blob = new Blob(chunks);
+            const text = await blob.text();
+            return JSON.parse(text);
+        }
+
+        loadProspects()
             .then(data => {
                 allData = data.filter(d => d.lat && d.lng);
 
