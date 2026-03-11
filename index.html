@@ -535,7 +535,7 @@
         @media (max-width: 768px) {
             #map { height: 100vh; }
 
-            /* Two fixed buttons: left = Filtres, right = Zones */
+            /* Two fixed buttons at bottom */
             .mobile-btn {
                 display: flex;
                 align-items: center;
@@ -544,65 +544,67 @@
                 position: fixed;
                 bottom: 16px;
                 z-index: 1002;
-                padding: 12px 18px;
+                padding: 14px 20px;
                 border: none;
                 border-radius: 30px;
                 font-size: 14px;
                 font-weight: bold;
                 color: white;
-                box-shadow: 0 3px 12px rgba(0,0,0,0.4);
+                box-shadow: 0 3px 12px rgba(0,0,0,0.5);
                 cursor: pointer;
             }
-            #mobile-btn-filters {
-                left: 12px;
-                background: #1a1a2e;
-            }
-            #mobile-btn-zones {
-                right: 12px;
-                background: #0f3460;
-            }
+            #mobile-btn-filters { left: 12px; background: #e94560; }
+            #mobile-btn-zones { right: 12px; background: #0f3460; }
 
             /* Hide desktop toggle */
             #toggle-sidebar { display: none; }
 
-            /* Sidebar: full-height overlay, hidden by default */
+            /* Sidebar = popup overlay centered */
             #sidebar {
-                width: 100%;
-                height: 100vh;
-                top: 0;
-                left: 0;
-                border-radius: 0;
-                transition: transform 0.3s ease;
+                width: calc(100% - 24px);
+                height: calc(100vh - 100px);
+                max-height: calc(100vh - 100px);
+                top: 12px;
+                left: 12px;
+                right: 12px;
+                bottom: auto;
+                border-radius: 16px;
                 overflow-y: auto;
                 -webkit-overflow-scrolling: touch;
+                transition: opacity 0.2s ease, visibility 0.2s ease;
+                opacity: 1;
+                visibility: visible;
             }
-            #sidebar.collapsed { transform: translateX(-100%); }
+            #sidebar.collapsed {
+                opacity: 0;
+                visibility: hidden;
+                transform: none;
+            }
 
-            /* Close button inside sidebar on mobile */
+            /* Close X button in sidebar */
             .mobile-close-sidebar {
-                display: block;
-                position: sticky;
-                top: 0;
-                right: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                top: 10px;
+                right: 10px;
                 z-index: 10;
-                float: right;
-                margin: 12px 12px 0 0;
-                background: rgba(255,255,255,0.15);
+                background: rgba(0,0,0,0.4);
                 border: none;
                 color: white;
-                font-size: 28px;
-                width: 40px;
-                height: 40px;
+                font-size: 24px;
+                width: 36px;
+                height: 36px;
                 border-radius: 50%;
                 cursor: pointer;
-                line-height: 1;
             }
 
-            /* Sidebar header compact */
-            .sidebar-header { padding: 12px 16px; }
+            /* Header */
+            .sidebar-header { padding: 12px 50px 12px 16px; }
             .sidebar-header h1 { font-size: 16px; }
 
-            /* Filter sections */
+            /* Compact sections */
             .filter-section { padding: 10px 16px; }
             .filter-section h3 { font-size: 12px; margin-bottom: 6px; }
             .stats-box { padding: 10px 16px; }
@@ -618,16 +620,26 @@
             }
             .grid-size-btn { padding: 10px 6px; font-size: 13px; }
 
-            /* Zone panel: full-height overlay from right */
+            /* Zone panel = same popup overlay style */
             #zone-panel {
-                width: 100%;
-                height: 100vh;
-                top: 0;
-                right: 0;
-                border-radius: 0;
-                transform: translateX(100%);
+                width: calc(100% - 24px);
+                height: calc(100vh - 100px);
+                max-height: calc(100vh - 100px);
+                top: 12px;
+                left: 12px;
+                right: 12px;
+                bottom: auto;
+                border-radius: 16px;
+                transition: opacity 0.2s ease, visibility 0.2s ease;
+                opacity: 0;
+                visibility: hidden;
+                transform: none;
             }
-            #zone-panel.open { transform: translateX(0); }
+            #zone-panel.open {
+                opacity: 1;
+                visibility: visible;
+                transform: none;
+            }
 
             /* Zone stats */
             .zone-stats .zone-stat-grid {
@@ -638,7 +650,7 @@
             .zone-stat-card .num { font-size: 18px; }
             .zone-stat-card .lbl { font-size: 10px; }
 
-            /* Legend */
+            /* Legend centered above buttons */
             .legend {
                 bottom: 70px;
                 right: auto;
@@ -652,12 +664,15 @@
             .leaflet-popup-content-wrapper { max-width: 280px !important; }
             .leaflet-popup-content { max-width: 260px !important; font-size: 12px; }
 
-            /* Touch-friendly controls */
+            /* Touch-friendly */
             .address-item { padding: 12px 14px; margin-bottom: 8px; }
             .address-item .addr-address { font-size: 14px; }
             .filter-group label { padding: 6px 0; font-size: 14px; min-height: 36px; }
             .filter-group input[type="checkbox"] { width: 20px; height: 20px; }
             select, input[type="range"] { padding: 10px 12px; font-size: 14px; }
+
+            /* Hide Leaflet zoom controls to avoid overlap */
+            .leaflet-control-zoom { display: none; }
 
             #loading h2 { font-size: 18px; }
         }
@@ -1650,14 +1665,17 @@
             document.getElementById('toggle-sidebar').classList.toggle('collapsed');
         }
 
-        // Mobile: two button functions
+        // Mobile: toggle buttons — reclic = ferme
         function mobileOpenFilters() {
             const sidebar = document.getElementById('sidebar');
+            if (!sidebar.classList.contains('collapsed')) {
+                sidebar.classList.add('collapsed');
+                return;
+            }
             sidebar.classList.remove('collapsed');
-            closeZonePanel(); // close the other one
+            closeZonePanel();
         }
         function mobileOpenZones() {
-            // Toggle zones grid on, then open zone panel info
             const sidebar = document.getElementById('sidebar');
             sidebar.classList.add('collapsed');
             if (!zonesEnabled) toggleZones();
