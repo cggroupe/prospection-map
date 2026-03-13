@@ -204,105 +204,172 @@
 
         /* Popup */
         .leaflet-popup-content-wrapper {
-            border-radius: 10px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.18);
+            padding: 0;
         }
-        .popup-content h3 { margin: 0 0 8px; font-size: 15px; color: #1a1a2e; }
-        .popup-content .popup-row {
+        .leaflet-popup-content { margin: 0 !important; }
+
+        .popup-card { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+
+        /* Header band */
+        .popup-header {
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            padding: 12px 14px;
+            border-radius: 12px 12px 0 0;
+        }
+        .popup-header-top {
             display: flex;
-            justify-content: space-between;
-            padding: 3px 0;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+        }
+        .popup-header .popup-type { font-size: 14px; font-weight: 700; flex: 1; }
+        .popup-header .popup-badges { display: flex; gap: 4px; flex-wrap: wrap; }
+        .popup-header .popup-addr-line {
             font-size: 12px;
-            border-bottom: 1px solid #f0f0f0;
+            opacity: 0.85;
+            margin-bottom: 6px;
         }
-        .popup-content .popup-label { color: #666; }
-        .popup-content .popup-value { font-weight: 600; color: #1a1a2e; }
-        .popup-content .popup-address {
-            font-size: 11px;
-            color: #888;
-            margin-top: 8px;
-            padding-top: 8px;
-            border-top: 1px solid #eee;
-        }
-        .popup-content .popup-address a.maps-link {
+        .popup-header .popup-maps-btn {
             display: inline-flex;
             align-items: center;
-            gap: 4px;
-            color: #1a73e8;
+            gap: 5px;
+            background: rgba(255,255,255,0.15);
+            color: white;
             text-decoration: none;
-            font-weight: 600;
-            margin-top: 4px;
-        }
-        .popup-content .popup-address a.maps-link:hover {
-            text-decoration: underline;
-            color: #0d47a1;
-        }
-        .popup-cost-highlight {
-            background: linear-gradient(135deg, #ffe0e0, #fff0e0);
-            padding: 6px 10px;
+            padding: 5px 10px;
             border-radius: 6px;
-            margin: 8px 0;
-            text-align: center;
-        }
-        .popup-cost-highlight .amount { font-size: 20px; font-weight: bold; color: #e3001b; }
-        .popup-cost-highlight .label { font-size: 11px; color: #666; }
-
-        /* Travaux estimation box */
-        .popup-travaux {
-            background: linear-gradient(135deg, #e8f5e9, #f1f8e9);
-            padding: 8px 10px;
-            border-radius: 6px;
-            margin: 8px 0;
             font-size: 11px;
+            font-weight: 600;
+            transition: background 0.2s;
         }
-        .popup-travaux .travaux-title {
-            font-weight: bold;
-            color: #2e7d32;
-            margin-bottom: 6px;
-            font-size: 12px;
-        }
-        .popup-travaux .trav-line {
-            display: flex;
-            justify-content: space-between;
-            padding: 2px 0;
-            border-bottom: 1px solid rgba(0,0,0,0.05);
-        }
-        .popup-travaux .trav-name { color: #333; }
-        .popup-travaux .trav-cost { font-weight: 600; color: #555; }
-        .popup-travaux .trav-aide { color: #27ae60; font-weight: 600; }
-        .popup-travaux-summary {
-            background: linear-gradient(135deg, #e3f2fd, #e8eaf6);
-            padding: 8px 10px;
-            border-radius: 6px;
-            margin: 6px 0;
-            font-size: 12px;
-        }
-        .popup-travaux-summary .summary-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 6px;
-            margin-top: 4px;
-        }
-        .popup-travaux-summary .summary-item {
-            text-align: center;
-            padding: 4px;
-            background: rgba(255,255,255,0.6);
-            border-radius: 4px;
-        }
-        .popup-travaux-summary .summary-item .sv { font-size: 16px; font-weight: bold; }
-        .popup-travaux-summary .summary-item .sl { font-size: 10px; color: #666; }
-        .sv-total { color: #1565c0; }
-        .sv-aides { color: #27ae60; }
-        .sv-reste { color: #e65100; }
-        .sv-eco { color: #2e7d32; }
-        .sv-roi { color: #6a1b9a; }
+        .popup-header .popup-maps-btn:hover { background: rgba(255,255,255,0.3); }
 
-        /* Flags container in popup */
+        /* Owner strip */
+        .popup-owner {
+            background: #0f3460;
+            color: white;
+            padding: 8px 14px;
+            font-size: 12px;
+        }
+        .popup-owner .owner-name { font-weight: 700; }
+        .popup-owner .owner-detail { opacity: 0.7; font-size: 11px; }
+
+        /* Flags */
         .popup-flags {
-            margin: 6px 0;
+            padding: 6px 14px;
             display: flex;
             flex-wrap: wrap;
-            gap: 3px;
+            gap: 4px;
+            background: #fafafa;
+            border-bottom: 1px solid #eee;
+        }
+
+        /* Key metrics grid */
+        .popup-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1px;
+            background: #e0e0e0;
+        }
+        .popup-metric {
+            background: white;
+            padding: 10px 12px;
+            text-align: center;
+        }
+        .popup-metric .pm-val { font-size: 17px; font-weight: 800; }
+        .popup-metric .pm-lbl { font-size: 10px; color: #888; text-transform: uppercase; letter-spacing: 0.3px; margin-top: 2px; }
+        .pm-cost { color: #e3001b; }
+        .pm-surf { color: #1565c0; }
+        .pm-conso { color: #f07d02; }
+        .pm-year { color: #555; }
+
+        /* Accordion sections */
+        .popup-section {
+            border-top: 1px solid #eee;
+        }
+        .popup-section-toggle {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 14px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 700;
+            color: #333;
+            background: white;
+            transition: background 0.15s;
+            user-select: none;
+        }
+        .popup-section-toggle:hover { background: #f5f5f5; }
+        .popup-section-toggle .ps-icon { font-size: 11px; color: #999; transition: transform 0.2s; }
+        .popup-section-toggle.open .ps-icon { transform: rotate(90deg); }
+        .popup-section-body {
+            display: none;
+            padding: 0 14px 12px;
+            font-size: 11px;
+            background: white;
+        }
+        .popup-section-body.open { display: block; }
+
+        /* Rows inside sections */
+        .ps-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .ps-row:last-child { border-bottom: none; }
+        .ps-label { color: #888; }
+        .ps-value { font-weight: 600; color: #1a1a2e; text-align: right; max-width: 60%; }
+
+        /* Travaux inside section */
+        .popup-trav-line {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        .popup-trav-line:last-child { border-bottom: none; }
+        .popup-trav-name { color: #333; font-size: 11px; }
+        .popup-trav-cost { font-weight: 600; color: #555; font-size: 11px; }
+        .popup-trav-aide { color: #27ae60; font-size: 10px; }
+
+        /* ROI summary bar */
+        .popup-roi-bar {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 1px;
+            background: #e0e0e0;
+            border-radius: 0 0 12px 12px;
+            overflow: hidden;
+        }
+        .popup-roi-item {
+            background: linear-gradient(135deg, #f8f9fa, #eef1f5);
+            padding: 8px 6px;
+            text-align: center;
+        }
+        .popup-roi-item .roi-val { font-size: 14px; font-weight: 800; }
+        .popup-roi-item .roi-lbl { font-size: 9px; color: #777; text-transform: uppercase; letter-spacing: 0.3px; }
+        .roi-green { color: #2e7d32; }
+        .roi-blue { color: #1565c0; }
+        .roi-purple { color: #6a1b9a; }
+
+        /* Isolation/deperditions mini boxes */
+        .ps-detail-box {
+            background: #f8f8f8;
+            border-radius: 6px;
+            padding: 6px 8px;
+            margin: 4px 0;
+        }
+        .ps-detail-box .ps-detail-title {
+            font-weight: 700;
+            font-size: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
         }
 
         /* Loading */
@@ -670,8 +737,11 @@
             .legend { display: none; }
 
             /* Popups */
-            .leaflet-popup-content-wrapper { max-width: 280px !important; }
-            .leaflet-popup-content { max-width: 260px !important; font-size: 12px; }
+            .leaflet-popup-content-wrapper { max-width: 300px !important; }
+            .leaflet-popup-content { max-width: 290px !important; font-size: 12px; }
+            .popup-card { width: 280px !important; }
+            .popup-metric .pm-val { font-size: 14px; }
+            .popup-roi-bar .roi-val { font-size: 12px; }
 
             /* Touch-friendly */
             .address-item { padding: 12px 14px; margin-bottom: 8px; }
@@ -870,6 +940,10 @@
                     <div class="il">Temps marche</div>
                 </div>
             </div>
+            <div id="itin-nav-buttons" style="display:flex;gap:8px;margin-top:10px">
+                <a id="itin-gmaps-link" href="#" target="_blank" rel="noopener" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#1a73e8;color:white;text-decoration:none;padding:10px;border-radius:8px;font-size:13px;font-weight:bold">&#x1F4CD; Google Maps</a>
+                <a id="itin-waze-link" href="#" target="_blank" rel="noopener" style="flex:1;display:flex;align-items:center;justify-content:center;gap:6px;background:#33ccff;color:#1a1a2e;text-decoration:none;padding:10px;border-radius:8px;font-size:13px;font-weight:bold">&#x1F699; Waze</a>
+            </div>
         </div>
 
         <div class="zone-sort">
@@ -1022,49 +1096,31 @@
 
         // ========== TRAVAUX ESTIMATION ==========
 
-        function travauxPopupHtml(d) {
+        // Toggle popup accordion sections
+        function togglePopupSection(el) {
+            el.classList.toggle('open');
+            const body = el.nextElementSibling;
+            body.classList.toggle('open');
+        }
+
+        function travauxSectionHtml(d) {
             if (!d.trav || d.trav.length === 0) return '';
 
             let lines = d.trav.map(t =>
-                `<div class="trav-line">
-                    <span class="trav-name">${t.n}</span>
-                    <span><span class="trav-cost">${t.c.toLocaleString('fr-FR')} EUR</span> <span class="trav-aide" style="font-size:10px">(aide: ${t.a.toLocaleString('fr-FR')})</span></span>
+                `<div class="popup-trav-line">
+                    <span class="popup-trav-name">${t.n}</span>
+                    <span><span class="popup-trav-cost">${t.c.toLocaleString('fr-FR')} EUR</span> <span class="popup-trav-aide">(aide: ${t.a.toLocaleString('fr-FR')})</span></span>
                 </div>`
             ).join('');
 
-            const totalHtml = d.est_total ? d.est_total.toLocaleString('fr-FR') : '?';
-            const aidesHtml = d.est_aides ? d.est_aides.toLocaleString('fr-FR') : '?';
-            const resteHtml = d.est_reste ? d.est_reste.toLocaleString('fr-FR') : '?';
-            const ecoHtml = d.est_eco ? d.est_eco.toLocaleString('fr-FR') : '?';
-            const roiHtml = d.est_roi || '?';
-
             return `
-                <div class="popup-travaux">
-                    <div class="travaux-title">Estimation travaux recommandes</div>
-                    ${lines}
-                </div>
-                <div class="popup-travaux-summary">
-                    <div style="font-weight:bold;font-size:12px;color:#1565c0;margin-bottom:4px">Bilan financier renovation</div>
-                    <div class="summary-grid">
-                        <div class="summary-item">
-                            <div class="sv sv-total">${totalHtml} EUR</div>
-                            <div class="sl">Total travaux</div>
-                        </div>
-                        <div class="summary-item">
-                            <div class="sv sv-aides">${aidesHtml} EUR</div>
-                            <div class="sl">Aides (MPR + CEE)</div>
-                        </div>
-                        <div class="summary-item">
-                            <div class="sv sv-reste">${resteHtml} EUR</div>
-                            <div class="sl">Reste a charge</div>
-                        </div>
-                        <div class="summary-item">
-                            <div class="sv sv-eco">${ecoHtml} EUR/an</div>
-                            <div class="sl">Economie annuelle</div>
-                        </div>
+                <div class="popup-section">
+                    <div class="popup-section-toggle" onclick="togglePopupSection(this)">
+                        <span>Travaux recommandes</span>
+                        <span class="ps-icon">&#9654;</span>
                     </div>
-                    <div style="text-align:center;margin-top:6px;padding-top:4px;border-top:1px solid rgba(0,0,0,0.1)">
-                        <span class="sv sv-roi" style="font-size:14px">ROI : ${roiHtml} ans</span>
+                    <div class="popup-section-body">
+                        ${lines}
                     </div>
                 </div>
             `;
@@ -1175,6 +1231,21 @@
                 ? walkMinutes + ' min'
                 : Math.floor(walkMinutes/60) + 'h' + (walkMinutes%60 ? String(walkMinutes%60).padStart(2,'0') : '');
             document.getElementById('itinerary-info').classList.add('visible');
+
+            // Build Google Maps directions URL (max 25 waypoints)
+            const maxWaypoints = Math.min(order.length, 25);
+            const origin = currentZoneData[order[0]];
+            const destination = currentZoneData[order[maxWaypoints - 1]];
+            let gmapsUrl = `https://www.google.com/maps/dir/${origin.lat},${origin.lng}`;
+            for (let i = 1; i < maxWaypoints; i++) {
+                const p = currentZoneData[order[i]];
+                gmapsUrl += `/${p.lat},${p.lng}`;
+            }
+            document.getElementById('itin-gmaps-link').href = gmapsUrl;
+
+            // Waze URL (navigate to first stop, then user follows)
+            const wazeUrl = `https://waze.com/ul?ll=${origin.lat},${origin.lng}&navigate=yes`;
+            document.getElementById('itin-waze-link').href = wazeUrl;
 
             // Sort by visit order
             document.getElementById('zone-sort-select').value = 'visit';
@@ -1511,83 +1582,103 @@
             const scoreLabel = d.sc >= 80 ? 'HOT' : d.sc >= 60 ? 'WARM' : d.sc >= 40 ? 'TEPID' : 'COLD';
             const cs = getConvScore(d);
             const flags = getFlags(d);
+            const mapsQuery = encodeURIComponent((d.adr || '') + ' ' + (d.com || '') + ' Bretagne France');
+            const constructionInfo = d.an ? `${d.per || ''} (${d.an})` : (d.per || 'N/C');
 
+            // Owner strip
             const ownerHtml = d.prop
-                ? `<div style="background:#0f3460;color:white;padding:6px 10px;border-radius:6px;margin-bottom:8px;font-size:12px">
-                    <div style="font-weight:bold">${d.prop}</div>
-                    <div style="opacity:0.7;font-size:11px">${d.prop_type || ''} ${d.siren ? '- SIREN ' + d.siren : ''}</div>
+                ? `<div class="popup-owner">
+                    <div class="owner-name">${d.prop}</div>
+                    <div class="owner-detail">${d.prop_type || ''} ${d.siren ? '- SIREN ' + d.siren : ''}</div>
                    </div>`
                 : '';
 
+            // Flags
             const flagsHtml = flags.length > 0
                 ? `<div class="popup-flags">${flags.map(f => flagToHtml(f)).join('')}</div>`
                 : '';
 
-            const isolationDetail = (d.iso_m || d.iso_f || d.iso_pb || d.iso_ph)
-                ? `<div style="background:#fff5f5;padding:6px 10px;border-radius:6px;margin:6px 0;font-size:11px">
-                    <div style="font-weight:bold;color:#e3001b;margin-bottom:4px">Detail isolation</div>
-                    ${d.iso_m ? '<div>Murs : <b>'+d.iso_m+'</b></div>' : ''}
-                    ${d.iso_f ? '<div>Fenetres : <b>'+d.iso_f+'</b></div>' : ''}
-                    ${d.iso_pb ? '<div>Plancher bas : <b>'+d.iso_pb+'</b></div>' : ''}
-                    ${d.iso_ph ? '<div>Plancher haut : <b>'+d.iso_ph+'</b></div>' : ''}
-                    ${d.ubat ? '<div>Ubat : <b>'+d.ubat.toFixed(2)+' W/m2.K</b></div>' : ''}
+            // Diagnostic section
+            const diagRows = [
+                d.desc_ch || d.chauf ? `<div class="ps-row"><span class="ps-label">Chauffage</span><span class="ps-value">${d.desc_ch || d.chauf}</span></div>` : '',
+                d.c_ch ? `<div class="ps-row"><span class="ps-label">Cout chauffage</span><span class="ps-value" style="color:#e3001b">${Math.round(d.c_ch)} EUR/an</span></div>` : '',
+                d.desc_ecs ? `<div class="ps-row"><span class="ps-label">Eau chaude</span><span class="ps-value">${d.desc_ecs}</span></div>` : '',
+                d.c_ecs ? `<div class="ps-row"><span class="ps-label">Cout ECS</span><span class="ps-value" style="color:#e3001b">${Math.round(d.c_ecs)} EUR/an</span></div>` : '',
+                d.vent ? `<div class="ps-row"><span class="ps-label">Ventilation</span><span class="ps-value">${d.vent}</span></div>` : '',
+                `<div class="ps-row"><span class="ps-label">Isolation</span><span class="ps-value">${d.iso || 'N/C'}</span></div>`,
+                d.ges ? `<div class="ps-row"><span class="ps-label">GES</span><span class="ps-value">${d.ges}</span></div>` : '',
+                d.dt ? `<div class="ps-row"><span class="ps-label">Date DPE</span><span class="ps-value">${d.dt}</span></div>` : '',
+            ].filter(Boolean).join('');
+
+            // Isolation + deperditions section
+            let isoDepHtml = '';
+            if (d.iso_m || d.iso_f || d.iso_pb || d.iso_ph) {
+                isoDepHtml += `<div class="ps-detail-box"><div class="ps-detail-title" style="color:#e3001b">Isolation</div>
+                    ${d.iso_m ? '<div class="ps-row"><span class="ps-label">Murs</span><span class="ps-value">'+d.iso_m+'</span></div>' : ''}
+                    ${d.iso_f ? '<div class="ps-row"><span class="ps-label">Fenetres</span><span class="ps-value">'+d.iso_f+'</span></div>' : ''}
+                    ${d.iso_pb ? '<div class="ps-row"><span class="ps-label">Plancher bas</span><span class="ps-value">'+d.iso_pb+'</span></div>' : ''}
+                    ${d.iso_ph ? '<div class="ps-row"><span class="ps-label">Plancher haut</span><span class="ps-value">'+d.iso_ph+'</span></div>' : ''}
+                    ${d.ubat ? '<div class="ps-row"><span class="ps-label">Ubat</span><span class="ps-value">'+d.ubat.toFixed(2)+' W/m2.K</span></div>' : ''}
+                </div>`;
+            }
+            if (d.dep_m || d.dep_v || d.dep_pb || d.dep_ph || d.dep_pt) {
+                isoDepHtml += `<div class="ps-detail-box"><div class="ps-detail-title" style="color:#f07d02">Deperditions (W/K)</div>
+                    ${d.dep_m ? '<div class="ps-row"><span class="ps-label">Murs</span><span class="ps-value">'+Math.round(d.dep_m)+'</span></div>' : ''}
+                    ${d.dep_v ? '<div class="ps-row"><span class="ps-label">Vitres</span><span class="ps-value">'+Math.round(d.dep_v)+'</span></div>' : ''}
+                    ${d.dep_pb ? '<div class="ps-row"><span class="ps-label">Plancher bas</span><span class="ps-value">'+Math.round(d.dep_pb)+'</span></div>' : ''}
+                    ${d.dep_ph ? '<div class="ps-row"><span class="ps-label">Plancher haut</span><span class="ps-value">'+Math.round(d.dep_ph)+'</span></div>' : ''}
+                    ${d.dep_pt ? '<div class="ps-row"><span class="ps-label">Ponts therm.</span><span class="ps-value">'+Math.round(d.dep_pt)+'</span></div>' : ''}
+                </div>`;
+            }
+
+            // ROI bar (bottom)
+            const roiBar = d.est_total
+                ? `<div class="popup-roi-bar">
+                    <div class="popup-roi-item"><div class="roi-val roi-blue">${d.est_reste ? d.est_reste.toLocaleString('fr-FR') : '?'} EUR</div><div class="roi-lbl">Reste a charge</div></div>
+                    <div class="popup-roi-item"><div class="roi-val roi-green">${d.est_eco ? d.est_eco.toLocaleString('fr-FR') : '?'} EUR/an</div><div class="roi-lbl">Economie</div></div>
+                    <div class="popup-roi-item"><div class="roi-val roi-purple">${d.est_roi || '?'} ans</div><div class="roi-lbl">ROI</div></div>
                    </div>`
                 : '';
-
-            const deperditionsHtml = (d.dep_m || d.dep_v || d.dep_pb || d.dep_ph || d.dep_pt)
-                ? `<div style="background:#fff8e1;padding:6px 10px;border-radius:6px;margin:6px 0;font-size:11px">
-                    <div style="font-weight:bold;color:#f07d02;margin-bottom:4px">Deperditions thermiques (W/K)</div>
-                    ${d.dep_m ? '<div>Murs : <b>'+Math.round(d.dep_m)+'</b></div>' : ''}
-                    ${d.dep_v ? '<div>Vitres : <b>'+Math.round(d.dep_v)+'</b></div>' : ''}
-                    ${d.dep_pb ? '<div>Plancher bas : <b>'+Math.round(d.dep_pb)+'</b></div>' : ''}
-                    ${d.dep_ph ? '<div>Plancher haut : <b>'+Math.round(d.dep_ph)+'</b></div>' : ''}
-                    ${d.dep_pt ? '<div>Ponts thermiques : <b>'+Math.round(d.dep_pt)+'</b></div>' : ''}
-                   </div>`
-                : '';
-
-            const costsDetail = (d.c_ch || d.c_ecs || d.c_ecl)
-                ? `<div style="font-size:11px;margin-top:4px">
-                    ${d.c_ch ? '<span style="margin-right:8px">Chauffage: <b>'+Math.round(d.c_ch)+' EUR</b></span>' : ''}
-                    ${d.c_ecs ? '<span style="margin-right:8px">ECS: <b>'+Math.round(d.c_ecs)+' EUR</b></span>' : ''}
-                    ${d.c_ecl ? '<span>Eclairage: <b>'+Math.round(d.c_ecl)+' EUR</b></span>' : ''}
-                   </div>`
-                : '';
-
-            const constructionInfo = d.an ? `${d.per || ''} (${d.an})` : (d.per || 'N/C');
 
             marker.bindPopup(`
-                <div class="popup-content" style="min-width:280px;max-height:500px;overflow-y:auto">
-                    <h3>
-                        <span class="dpe-badge dpe-${d.dpe}">${d.dpe}</span>
-                        ${d.typ || ''} - ${d.com || ''}
-                        <span class="score-badge score-${scoreClass}">${scoreLabel} ${d.sc}</span>
-                        ${convBadgeHtml(cs)}
-                    </h3>
-                    ${flagsHtml}
+                <div class="popup-card" style="width:310px;max-height:480px;overflow-y:auto;overflow-x:hidden">
+                    <div class="popup-header">
+                        <div class="popup-header-top">
+                            <span class="dpe-badge dpe-${d.dpe}">${d.dpe}</span>
+                            <span class="popup-type">${d.typ || ''} - ${d.com || ''}</span>
+                            <span class="score-badge score-${scoreClass}" style="flex-shrink:0">${scoreLabel} ${d.sc}</span>
+                        </div>
+                        <div class="popup-addr-line">${d.adr || 'Adresse non renseignee'}${d.com ? ', ' + d.com : ''}</div>
+                        <a class="popup-maps-btn" href="https://www.google.com/maps/search/?api=1&query=${mapsQuery}" target="_blank" rel="noopener">&#x1F4CD; Voir sur Google Maps</a>
+                    </div>
                     ${ownerHtml}
-                    <div class="popup-cost-highlight">
-                        <div class="amount">${d.cout ? d.cout.toLocaleString('fr-FR') + ' EUR/an' : 'N/C'}</div>
-                        <div class="label">Cout energetique annuel</div>
-                        ${costsDetail}
+                    ${flagsHtml}
+                    <div class="popup-metrics">
+                        <div class="popup-metric"><div class="pm-val pm-cost">${d.cout ? d.cout.toLocaleString('fr-FR') : 'N/C'}</div><div class="pm-lbl">EUR / an</div></div>
+                        <div class="popup-metric"><div class="pm-val pm-surf">${d.surf || 'N/C'}</div><div class="pm-lbl">m2${d.niv ? ' - '+d.niv+' niv.' : ''}</div></div>
+                        <div class="popup-metric"><div class="pm-val pm-conso">${d.conso || 'N/C'}</div><div class="pm-lbl">kWh/m2/an</div></div>
+                        <div class="popup-metric"><div class="pm-val pm-year">${constructionInfo}</div><div class="pm-lbl">Construction</div></div>
                     </div>
-                    ${travauxPopupHtml(d)}
-                    <div class="popup-row"><span class="popup-label">Surface</span><span class="popup-value">${d.surf ? d.surf + ' m2' : 'N/C'}${d.hsp ? ' (h:'+d.hsp+'m)' : ''}${d.niv ? ' - '+d.niv+' niv.' : ''}</span></div>
-                    <div class="popup-row"><span class="popup-label">Conso</span><span class="popup-value">${d.conso ? d.conso + ' kWh/m2/an' : 'N/C'}</span></div>
-                    <div class="popup-row"><span class="popup-label">Construction</span><span class="popup-value">${constructionInfo}</span></div>
-                    <div class="popup-row"><span class="popup-label">Chauffage</span><span class="popup-value">${d.desc_ch || d.chauf || 'N/C'}</span></div>
-                    <div class="popup-row"><span class="popup-label">Eau chaude</span><span class="popup-value">${d.desc_ecs || 'N/C'}</span></div>
-                    <div class="popup-row"><span class="popup-label">Ventilation</span><span class="popup-value">${d.vent || 'N/C'}</span></div>
-                    <div class="popup-row"><span class="popup-label">Isolation globale</span><span class="popup-value">${d.iso || 'N/C'}</span></div>
-                    <div class="popup-row"><span class="popup-label">GES</span><span class="popup-value">${d.ges || 'N/C'}</span></div>
-                    <div class="popup-row"><span class="popup-label">Date DPE</span><span class="popup-value">${d.dt || 'N/C'}</span></div>
-                    ${isolationDetail}
-                    ${deperditionsHtml}
-                    <div class="popup-address">
-                        ${d.adr || 'Adresse non renseignee'}${d.com ? ', ' + d.com : ''}
-                        <br><a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.adr || '') + ' ' + (d.com || '') + ' Bretagne France')}" target="_blank" rel="noopener">&#x1F4CD; Voir sur Google Maps</a>
+                    <div class="popup-section">
+                        <div class="popup-section-toggle" onclick="togglePopupSection(this)">
+                            <span>Diagnostic energetique</span>
+                            <span class="ps-icon">&#9654;</span>
+                        </div>
+                        <div class="popup-section-body">
+                            ${diagRows}
+                        </div>
                     </div>
+                    ${travauxSectionHtml(d)}
+                    ${isoDepHtml ? `<div class="popup-section">
+                        <div class="popup-section-toggle" onclick="togglePopupSection(this)">
+                            <span>Isolation & Deperditions</span>
+                            <span class="ps-icon">&#9654;</span>
+                        </div>
+                        <div class="popup-section-body">${isoDepHtml}</div>
+                    </div>` : ''}
+                    ${roiBar}
                 </div>
-            `, { maxWidth: 340 });
+            `, { maxWidth: 340, className: 'popup-redesigned' });
 
             return marker;
         }
