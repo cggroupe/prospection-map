@@ -606,6 +606,198 @@
             box-shadow: 0 2px 6px rgba(0,0,0,0.4);
         }
 
+        /* Export & dashboard buttons */
+        .btn-export, .btn-dashboard {
+            display: block;
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 6px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .btn-export { background: #27ae60; color: white; }
+        .btn-export:hover { background: #219a52; }
+        .btn-dashboard { background: #2980b9; color: white; }
+        .btn-dashboard:hover { background: #2471a3; }
+
+        /* Detail panel (prospect) */
+        #detail-panel {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 420px;
+            height: 100vh;
+            background: #fff;
+            color: #1a1a2e;
+            z-index: 1001;
+            overflow-y: auto;
+            box-shadow: -4px 0 20px rgba(0,0,0,0.25);
+            transform: translateX(420px);
+            transition: transform 0.3s;
+        }
+        #detail-panel.open { transform: translateX(0); }
+        .detail-header {
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            color: white;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1;
+        }
+        .detail-header h2 { font-size: 15px; margin: 0; }
+
+        /* Detail tabs */
+        .detail-tabs {
+            display: flex;
+            border-bottom: 2px solid #eee;
+            background: #f8f9fa;
+        }
+        .detail-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            color: #888;
+            transition: all 0.2s;
+        }
+        .detail-tab.active { color: #e94560; border-color: #e94560; }
+        .detail-tab:hover { color: #e94560; background: #f0f0f0; }
+        .detail-tab-body { display: none; padding: 16px 20px; }
+        .detail-tab-body.active { display: block; }
+
+        /* CRM status */
+        .crm-section { padding: 12px 20px; background: #f0f4ff; border-bottom: 1px solid #dde; }
+        .crm-status-bar { display: flex; gap: 4px; margin-top: 6px; }
+        .crm-status-btn {
+            flex: 1;
+            padding: 6px 4px;
+            border: 2px solid #ddd;
+            border-radius: 6px;
+            background: white;
+            font-size: 9px;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.2s;
+        }
+        .crm-status-btn.active { color: white; }
+        .crm-status-btn[data-status="new"] { border-color: #95a5a6; }
+        .crm-status-btn[data-status="new"].active { background: #95a5a6; }
+        .crm-status-btn[data-status="contacted"] { border-color: #3498db; }
+        .crm-status-btn[data-status="contacted"].active { background: #3498db; }
+        .crm-status-btn[data-status="rdv"] { border-color: #f39c12; }
+        .crm-status-btn[data-status="rdv"].active { background: #f39c12; }
+        .crm-status-btn[data-status="devis"] { border-color: #9b59b6; }
+        .crm-status-btn[data-status="devis"].active { background: #9b59b6; }
+        .crm-status-btn[data-status="signed"] { border-color: #27ae60; }
+        .crm-status-btn[data-status="signed"].active { background: #27ae60; }
+        .crm-status-btn[data-status="lost"] { border-color: #e74c3c; }
+        .crm-status-btn[data-status="lost"].active { background: #e74c3c; }
+        .crm-notes textarea {
+            width: 100%;
+            min-height: 60px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 8px;
+            font-size: 12px;
+            resize: vertical;
+            margin-top: 8px;
+        }
+        .crm-notes button {
+            margin-top: 6px;
+            padding: 6px 16px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        /* Dashboard */
+        #dashboard-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.7);
+            z-index: 2000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .dashboard-box {
+            background: #1a1a2e;
+            color: #eee;
+            width: 90%;
+            max-width: 900px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+        }
+        .dash-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        .dash-card {
+            background: #2a2a4a;
+            border-radius: 10px;
+            padding: 16px;
+        }
+        .dash-card h3 { font-size: 12px; text-transform: uppercase; letter-spacing: 1px; color: #e94560; margin: 0 0 12px; }
+        .dash-bar {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 6px;
+            font-size: 12px;
+        }
+        .dash-bar-fill {
+            height: 20px;
+            border-radius: 4px;
+            min-width: 2px;
+            transition: width 0.3s;
+        }
+        .dash-bar-label { min-width: 100px; color: #aaa; }
+        .dash-bar-val { min-width: 50px; text-align: right; font-weight: bold; }
+        .dash-big-num { font-size: 32px; font-weight: 800; color: #e94560; }
+        .dash-big-label { font-size: 11px; color: #aaa; }
+
+        /* Pagination */
+        .zone-pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 0;
+        }
+        .zone-pagination button {
+            padding: 6px 14px;
+            background: #3a3a5a;
+            color: #eee;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+        .zone-pagination button:disabled { opacity: 0.4; cursor: not-allowed; }
+        .zone-pagination span { font-size: 12px; color: #aaa; }
+
         /* Mobile-only elements (hidden on desktop) */
         .mobile-btn, .mobile-close-sidebar {
             display: none;
@@ -750,6 +942,17 @@
             .filter-group input[type="checkbox"] { width: 20px; height: 20px; }
             select, input[type="range"] { padding: 10px 12px; font-size: 14px; }
 
+            /* Detail panel mobile */
+            #detail-panel {
+                width: 100%;
+                transform: translateX(100%);
+            }
+            #detail-panel.open { transform: translateX(0); }
+
+            /* Dashboard mobile */
+            .dashboard-box { width: 95%; padding: 16px; }
+            .dash-grid { grid-template-columns: 1fr; }
+
             /* Hide Leaflet zoom controls to avoid overlap */
             .leaflet-control-zoom { display: none; }
 
@@ -872,6 +1075,11 @@
 
         <button class="btn-reset" onclick="resetFilters()">Reinitialiser les filtres</button>
 
+        <div style="padding:10px 20px">
+            <button class="btn-export" onclick="exportCSV()">Exporter CSV (filtres actifs)</button>
+            <button class="btn-dashboard" onclick="toggleDashboard()">Dashboard stats</button>
+        </div>
+
         <div style="padding:15px 20px;font-size:11px;color:#666;text-align:center">
             Source: ADEME Open Data (DPE)<br>
             Donnees publiques - Licence Ouverte Etalab 2.0
@@ -963,23 +1171,25 @@
         </div>
     </div>
 
-    <div class="legend" id="legend-box">
-        <div style="font-weight:bold;margin-bottom:6px">Legende</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#f07d02"></div> DPE F</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#e3001b"></div> DPE G</div>
-        <div class="legend-item" style="margin-top:6px;font-size:11px;color:#888">Taille = cout energie</div>
-        <div id="legend-conv" style="margin-top:6px;padding-top:6px;border-top:1px solid #ddd">
-            <div style="font-weight:bold;margin-bottom:4px">Score conversion</div>
-            <div class="legend-item"><span class="conv-badge conv-high">CONV 70+</span> Tres facile</div>
-            <div class="legend-item"><span class="conv-badge conv-mid">CONV 40-69</span> Moyen</div>
-            <div class="legend-item"><span class="conv-badge conv-low">CONV 0-39</span> Difficile</div>
+    <!-- Legend removed: was blocking zone panel -->
+
+    <!-- Prospect detail panel (right overlay) -->
+    <div id="detail-panel">
+        <div class="detail-header">
+            <h2 id="detail-title">Detail prospect</h2>
+            <button class="zone-close" onclick="closeDetailPanel()">&times;</button>
         </div>
-        <div id="legend-zones" style="display:none;margin-top:8px;padding-top:8px;border-top:1px solid #ddd">
-            <div style="font-weight:bold;margin-bottom:4px">Densite zones</div>
-            <div class="legend-item"><div class="legend-square" style="background:rgba(233,69,96,0.6)"></div> Forte (10+)</div>
-            <div class="legend-item"><div class="legend-square" style="background:rgba(233,69,96,0.35)"></div> Moyenne (5-9)</div>
-            <div class="legend-item"><div class="legend-square" style="background:rgba(233,69,96,0.15)"></div> Faible (1-4)</div>
-            <div class="legend-item"><div class="legend-square" style="background:rgba(200,200,200,0.1);border:1px dashed #ccc"></div> Vide</div>
+        <div id="detail-content"></div>
+    </div>
+
+    <!-- Dashboard overlay -->
+    <div id="dashboard-overlay" style="display:none">
+        <div class="dashboard-box">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+                <h2 style="margin:0;font-size:18px">Dashboard Prospects</h2>
+                <button onclick="toggleDashboard()" style="background:none;border:none;color:#eee;font-size:22px;cursor:pointer">&times;</button>
+            </div>
+            <div id="dashboard-content"></div>
         </div>
     </div>
 
@@ -1268,19 +1478,15 @@
             zonesEnabled = !zonesEnabled;
             const btn = document.getElementById('btn-toggle-zones');
             const opts = document.getElementById('grid-options');
-            const legendZones = document.getElementById('legend-zones');
-
             if (zonesEnabled) {
                 btn.textContent = 'Desactiver le quadrillage';
                 btn.classList.add('active');
                 opts.style.display = 'block';
-                legendZones.style.display = 'block';
                 drawGrid();
             } else {
                 btn.textContent = 'Activer le quadrillage';
                 btn.classList.remove('active');
                 opts.style.display = 'none';
-                legendZones.style.display = 'none';
                 clearGrid();
                 closeZonePanel();
             }
@@ -1427,6 +1633,7 @@
             }
 
             // Store for itinerary and sorting
+            zonePage = 0;
             currentZoneData = data.slice();
 
             // Sort by score descending (best prospects first)
@@ -1497,7 +1704,15 @@
                 return;
             }
 
-            currentZoneData.forEach((d, i) => {
+            // Pagination
+            const totalPages = Math.ceil(currentZoneData.length / ZONE_PAGE_SIZE);
+            if (zonePage >= totalPages) zonePage = totalPages - 1;
+            if (zonePage < 0) zonePage = 0;
+            const start = zonePage * ZONE_PAGE_SIZE;
+            const pageData = currentZoneData.slice(start, start + ZONE_PAGE_SIZE);
+
+            pageData.forEach((d, idx) => {
+                const i = start + idx; // global index for visit order
                 const scoreClass = d.sc >= 80 ? 'hot' : d.sc >= 60 ? 'warm' : d.sc >= 40 ? 'tepid' : 'cold';
                 const scoreLabel = d.sc >= 80 ? 'HOT' : d.sc >= 60 ? 'WARM' : d.sc >= 40 ? 'TEPID' : 'COLD';
                 const borderClass = d.dpe === 'G' ? 'dpe-g-border' : 'dpe-f-border';
@@ -1525,7 +1740,8 @@
                     </div>
                     ${d.est_total ? '<div class="addr-details"><span style="color:#27ae60">Travaux: ' + d.est_total.toLocaleString('fr-FR') + ' EUR</span><span style="color:#2980b9">Aides: ' + (d.est_aides||0).toLocaleString('fr-FR') + ' EUR</span><span style="color:#e65100;font-weight:bold">Reste: ' + (d.est_reste||0).toLocaleString('fr-FR') + ' EUR</span></div>' : ''}
                     ${d.est_eco ? '<div class="addr-details"><span style="color:#2e7d32">Eco: ' + d.est_eco.toLocaleString('fr-FR') + ' EUR/an</span><span style="color:#6a1b9a">ROI: ' + (d.est_roi||'?') + ' ans</span></div>' : ''}
-                    <div class="addr-details"><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.adr || '') + ' ' + (d.com || '') + ' Bretagne France')}" target="_blank" rel="noopener" style="color:#1a73e8;text-decoration:none;font-weight:600">&#x1F4CD; Google Maps</a></div>
+                    <div class="addr-details"><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.adr || '') + ' ' + (d.com || '') + ' Bretagne France')}" target="_blank" rel="noopener" style="color:#1a73e8;text-decoration:none;font-weight:600" onclick="event.stopPropagation()">&#x1F4CD; Google Maps</a>
+                    <a href="#" class="zone-detail-link" data-zone-idx="${i}" style="color:#e94560;text-decoration:none;font-weight:600;margin-left:10px">Details</a></div>
                 `;
 
                 // Click to fly to the point and open popup
@@ -1540,6 +1756,28 @@
 
                 container.appendChild(div);
             });
+
+            // Bind detail links
+            container.querySelectorAll('.zone-detail-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const idx = parseInt(link.dataset.zoneIdx);
+                    if (currentZoneData[idx]) openDetailPanel(currentZoneData[idx]);
+                });
+            });
+
+            // Pagination controls
+            if (totalPages > 1) {
+                const pagDiv = document.createElement('div');
+                pagDiv.className = 'zone-pagination';
+                pagDiv.innerHTML = `
+                    <button ${zonePage === 0 ? 'disabled' : ''} onclick="zonePage--;renderZoneAddresses()">&#9664; Prec</button>
+                    <span>${zonePage + 1} / ${totalPages} (${currentZoneData.length} prospects)</span>
+                    <button ${zonePage >= totalPages - 1 ? 'disabled' : ''} onclick="zonePage++;renderZoneAddresses()">Suiv &#9654;</button>
+                `;
+                container.appendChild(pagDiv);
+            }
         }
 
         function closeZonePanel() {
@@ -1564,7 +1802,7 @@
 
         // ========== END GRID ZONES ==========
 
-        // Create marker
+        // Create marker — lightweight popup + detail panel on button click
         function createMarker(d) {
             const color = DPE_COLORS[d.dpe] || '#999';
             const radius = Math.min(Math.max((d.cout || 2000) / 500, 4), 12);
@@ -1580,105 +1818,47 @@
 
             const scoreClass = d.sc >= 80 ? 'hot' : d.sc >= 60 ? 'warm' : d.sc >= 40 ? 'tepid' : 'cold';
             const scoreLabel = d.sc >= 80 ? 'HOT' : d.sc >= 60 ? 'WARM' : d.sc >= 40 ? 'TEPID' : 'COLD';
-            const cs = getConvScore(d);
-            const flags = getFlags(d);
             const mapsQuery = encodeURIComponent((d.adr || '') + ' ' + (d.com || '') + ' Bretagne France');
-            const constructionInfo = d.an ? `${d.per || ''} (${d.an})` : (d.per || 'N/C');
+            const pcrm = getProspectCRM(d);
+            const crmColor = pcrm.status !== 'new' ? CRM_STATUSES.find(s => s.id === pcrm.status) : null;
 
-            // Owner strip
-            const ownerHtml = d.prop
-                ? `<div class="popup-owner">
-                    <div class="owner-name">${d.prop}</div>
-                    <div class="owner-detail">${d.prop_type || ''} ${d.siren ? '- SIREN ' + d.siren : ''}</div>
-                   </div>`
-                : '';
-
-            // Flags
-            const flagsHtml = flags.length > 0
-                ? `<div class="popup-flags">${flags.map(f => flagToHtml(f)).join('')}</div>`
-                : '';
-
-            // Diagnostic section
-            const diagRows = [
-                d.desc_ch || d.chauf ? `<div class="ps-row"><span class="ps-label">Chauffage</span><span class="ps-value">${d.desc_ch || d.chauf}</span></div>` : '',
-                d.c_ch ? `<div class="ps-row"><span class="ps-label">Cout chauffage</span><span class="ps-value" style="color:#e3001b">${Math.round(d.c_ch)} EUR/an</span></div>` : '',
-                d.desc_ecs ? `<div class="ps-row"><span class="ps-label">Eau chaude</span><span class="ps-value">${d.desc_ecs}</span></div>` : '',
-                d.c_ecs ? `<div class="ps-row"><span class="ps-label">Cout ECS</span><span class="ps-value" style="color:#e3001b">${Math.round(d.c_ecs)} EUR/an</span></div>` : '',
-                d.vent ? `<div class="ps-row"><span class="ps-label">Ventilation</span><span class="ps-value">${d.vent}</span></div>` : '',
-                `<div class="ps-row"><span class="ps-label">Isolation</span><span class="ps-value">${d.iso || 'N/C'}</span></div>`,
-                d.ges ? `<div class="ps-row"><span class="ps-label">GES</span><span class="ps-value">${d.ges}</span></div>` : '',
-                d.dt ? `<div class="ps-row"><span class="ps-label">Date DPE</span><span class="ps-value">${d.dt}</span></div>` : '',
-            ].filter(Boolean).join('');
-
-            // Isolation + deperditions section
-            let isoDepHtml = '';
-            if (d.iso_m || d.iso_f || d.iso_pb || d.iso_ph) {
-                isoDepHtml += `<div class="ps-detail-box"><div class="ps-detail-title" style="color:#e3001b">Isolation</div>
-                    ${d.iso_m ? '<div class="ps-row"><span class="ps-label">Murs</span><span class="ps-value">'+d.iso_m+'</span></div>' : ''}
-                    ${d.iso_f ? '<div class="ps-row"><span class="ps-label">Fenetres</span><span class="ps-value">'+d.iso_f+'</span></div>' : ''}
-                    ${d.iso_pb ? '<div class="ps-row"><span class="ps-label">Plancher bas</span><span class="ps-value">'+d.iso_pb+'</span></div>' : ''}
-                    ${d.iso_ph ? '<div class="ps-row"><span class="ps-label">Plancher haut</span><span class="ps-value">'+d.iso_ph+'</span></div>' : ''}
-                    ${d.ubat ? '<div class="ps-row"><span class="ps-label">Ubat</span><span class="ps-value">'+d.ubat.toFixed(2)+' W/m2.K</span></div>' : ''}
-                </div>`;
-            }
-            if (d.dep_m || d.dep_v || d.dep_pb || d.dep_ph || d.dep_pt) {
-                isoDepHtml += `<div class="ps-detail-box"><div class="ps-detail-title" style="color:#f07d02">Deperditions (W/K)</div>
-                    ${d.dep_m ? '<div class="ps-row"><span class="ps-label">Murs</span><span class="ps-value">'+Math.round(d.dep_m)+'</span></div>' : ''}
-                    ${d.dep_v ? '<div class="ps-row"><span class="ps-label">Vitres</span><span class="ps-value">'+Math.round(d.dep_v)+'</span></div>' : ''}
-                    ${d.dep_pb ? '<div class="ps-row"><span class="ps-label">Plancher bas</span><span class="ps-value">'+Math.round(d.dep_pb)+'</span></div>' : ''}
-                    ${d.dep_ph ? '<div class="ps-row"><span class="ps-label">Plancher haut</span><span class="ps-value">'+Math.round(d.dep_ph)+'</span></div>' : ''}
-                    ${d.dep_pt ? '<div class="ps-row"><span class="ps-label">Ponts therm.</span><span class="ps-value">'+Math.round(d.dep_pt)+'</span></div>' : ''}
-                </div>`;
-            }
-
-            // ROI bar (bottom)
-            const roiBar = d.est_total
-                ? `<div class="popup-roi-bar">
-                    <div class="popup-roi-item"><div class="roi-val roi-blue">${d.est_reste ? d.est_reste.toLocaleString('fr-FR') : '?'} EUR</div><div class="roi-lbl">Reste a charge</div></div>
-                    <div class="popup-roi-item"><div class="roi-val roi-green">${d.est_eco ? d.est_eco.toLocaleString('fr-FR') : '?'} EUR/an</div><div class="roi-lbl">Economie</div></div>
-                    <div class="popup-roi-item"><div class="roi-val roi-purple">${d.est_roi || '?'} ans</div><div class="roi-lbl">ROI</div></div>
-                   </div>`
-                : '';
-
+            // Light popup: DPE + score + adresse + cout + 2 boutons
+            const popupId = `popup-${d.lat}-${d.lng}`.replace(/\./g, '_');
             marker.bindPopup(`
-                <div class="popup-card" style="width:310px;max-height:480px;overflow-y:auto;overflow-x:hidden">
-                    <div class="popup-header">
-                        <div class="popup-header-top">
-                            <span class="dpe-badge dpe-${d.dpe}">${d.dpe}</span>
-                            <span class="popup-type">${d.typ || ''} - ${d.com || ''}</span>
-                            <span class="score-badge score-${scoreClass}" style="flex-shrink:0">${scoreLabel} ${d.sc}</span>
+                <div class="popup-card" style="width:280px">
+                    <div class="popup-header" style="padding:10px 12px">
+                        <div class="popup-header-top" style="margin-bottom:4px">
+                            <span class="dpe-badge dpe-${d.dpe}" style="font-size:13px;padding:1px 8px">${d.dpe}</span>
+                            <span class="popup-type" style="font-size:13px">${d.typ || ''} - ${d.com || ''}</span>
+                            <span class="score-badge score-${scoreClass}" style="flex-shrink:0;font-size:10px">${scoreLabel} ${d.sc}</span>
                         </div>
-                        <div class="popup-addr-line">${d.adr || 'Adresse non renseignee'}${d.com ? ', ' + d.com : ''}</div>
-                        <a class="popup-maps-btn" href="https://www.google.com/maps/search/?api=1&query=${mapsQuery}" target="_blank" rel="noopener">&#x1F4CD; Voir sur Google Maps</a>
+                        <div class="popup-addr-line" style="font-size:11px;margin-bottom:0">${d.adr || 'Adresse non renseignee'}</div>
                     </div>
-                    ${ownerHtml}
-                    ${flagsHtml}
-                    <div class="popup-metrics">
-                        <div class="popup-metric"><div class="pm-val pm-cost">${d.cout ? d.cout.toLocaleString('fr-FR') : 'N/C'}</div><div class="pm-lbl">EUR / an</div></div>
-                        <div class="popup-metric"><div class="pm-val pm-surf">${d.surf || 'N/C'}</div><div class="pm-lbl">m2${d.niv ? ' - '+d.niv+' niv.' : ''}</div></div>
-                        <div class="popup-metric"><div class="pm-val pm-conso">${d.conso || 'N/C'}</div><div class="pm-lbl">kWh/m2/an</div></div>
-                        <div class="popup-metric"><div class="pm-val pm-year">${constructionInfo}</div><div class="pm-lbl">Construction</div></div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#e0e0e0">
+                        <div style="background:white;padding:8px;text-align:center"><div style="font-size:16px;font-weight:800;color:#e3001b">${d.cout ? d.cout.toLocaleString('fr-FR') : 'N/C'}</div><div style="font-size:9px;color:#888">EUR/an</div></div>
+                        <div style="background:white;padding:8px;text-align:center"><div style="font-size:16px;font-weight:800;color:#1565c0">${d.surf || 'N/C'}</div><div style="font-size:9px;color:#888">m2</div></div>
                     </div>
-                    <div class="popup-section">
-                        <div class="popup-section-toggle" onclick="togglePopupSection(this)">
-                            <span>Diagnostic energetique</span>
-                            <span class="ps-icon">&#9654;</span>
-                        </div>
-                        <div class="popup-section-body">
-                            ${diagRows}
-                        </div>
+                    ${d.prop ? '<div style="background:#0f3460;color:white;padding:6px 12px;font-size:11px"><b>'+d.prop+'</b></div>' : ''}
+                    ${d.dvf ? '<div style="background:#fff3e0;padding:6px 12px;font-size:11px;display:flex;justify-content:space-between"><span style="font-weight:700;color:#e65100">DVF '+d.dvf.prix.toLocaleString('fr-FR')+' EUR</span><span style="color:#555">'+(d.dvf.pm2?d.dvf.pm2.toLocaleString('fr-FR')+' EUR/m2':'')+'</span><span style="color:#888">'+d.dvf.date+'</span></div>' : ''}
+                    ${d.est_roi ? '<div style="background:#f0fff0;padding:6px 12px;font-size:11px;display:flex;justify-content:space-between"><span style="color:#2e7d32;font-weight:700">ROI '+d.est_roi+' ans</span><span style="color:#1565c0">Reste: '+(d.est_reste?d.est_reste.toLocaleString('fr-FR'):'?')+' EUR</span></div>' : ''}
+                    ${crmColor ? '<div style="background:'+crmColor.color+';padding:4px 12px;font-size:10px;color:white;font-weight:700;text-transform:uppercase">'+crmColor.label+'</div>' : ''}
+                    <div style="display:flex;gap:0;border-top:1px solid #eee">
+                        <button id="${popupId}" style="flex:1;padding:10px;background:#1a1a2e;color:white;border:none;font-size:12px;font-weight:700;cursor:pointer;border-radius:0 0 0 12px">Details</button>
+                        <a href="https://www.google.com/maps/search/?api=1&query=${mapsQuery}" target="_blank" rel="noopener" style="flex:1;padding:10px;background:#1a73e8;color:white;border:none;font-size:12px;font-weight:700;cursor:pointer;text-decoration:none;text-align:center;border-radius:0 0 12px 0;display:flex;align-items:center;justify-content:center;gap:4px">&#x1F4CD; Maps</a>
                     </div>
-                    ${travauxSectionHtml(d)}
-                    ${isoDepHtml ? `<div class="popup-section">
-                        <div class="popup-section-toggle" onclick="togglePopupSection(this)">
-                            <span>Isolation & Deperditions</span>
-                            <span class="ps-icon">&#9654;</span>
-                        </div>
-                        <div class="popup-section-body">${isoDepHtml}</div>
-                    </div>` : ''}
-                    ${roiBar}
                 </div>
-            `, { maxWidth: 340, className: 'popup-redesigned' });
+            `, { maxWidth: 300, className: 'popup-redesigned' });
+
+            // When popup opens, bind the "Details" button to open the detail panel
+            marker.on('popupopen', () => {
+                const btn = document.getElementById(popupId);
+                if (btn) {
+                    btn.addEventListener('click', () => {
+                        marker.closePopup();
+                        openDetailPanel(d);
+                    });
+                }
+            });
 
             return marker;
         }
@@ -1803,6 +1983,351 @@
         document.getElementById('filter-cout').addEventListener('input', applyFilters);
         document.getElementById('filter-conv').addEventListener('input', applyFilters);
 
+        // ========== CRM (localStorage) ==========
+        const CRM_KEY = 'prospection_crm';
+        function getCRM() {
+            try { return JSON.parse(localStorage.getItem(CRM_KEY) || '{}'); } catch(e) { return {}; }
+        }
+        function setCRM(data) { localStorage.setItem(CRM_KEY, JSON.stringify(data)); }
+        function getProspectKey(d) { return `${d.lat}_${d.lng}`; }
+        function getProspectCRM(d) {
+            const crm = getCRM();
+            return crm[getProspectKey(d)] || { status: 'new', notes: '' };
+        }
+        function setProspectCRM(d, field, value) {
+            const crm = getCRM();
+            const key = getProspectKey(d);
+            if (!crm[key]) crm[key] = { status: 'new', notes: '' };
+            crm[key][field] = value;
+            setCRM(crm);
+        }
+        const CRM_STATUSES = [
+            { id: 'new', label: 'Nouveau', color: '#95a5a6' },
+            { id: 'contacted', label: 'Contacte', color: '#3498db' },
+            { id: 'rdv', label: 'RDV', color: '#f39c12' },
+            { id: 'devis', label: 'Devis', color: '#9b59b6' },
+            { id: 'signed', label: 'Signe', color: '#27ae60' },
+            { id: 'lost', label: 'Perdu', color: '#e74c3c' }
+        ];
+
+        // ========== DETAIL PANEL (prospect) ==========
+        let currentDetailProspect = null;
+
+        function openDetailPanel(d) {
+            currentDetailProspect = d;
+            const panel = document.getElementById('detail-panel');
+            panel.classList.add('open');
+
+            const cs = getConvScore(d);
+            const flags = getFlags(d);
+            const scoreClass = d.sc >= 80 ? 'hot' : d.sc >= 60 ? 'warm' : d.sc >= 40 ? 'tepid' : 'cold';
+            const scoreLabel = d.sc >= 80 ? 'HOT' : d.sc >= 60 ? 'WARM' : d.sc >= 40 ? 'TEPID' : 'COLD';
+            const mapsQuery = encodeURIComponent((d.adr || '') + ' ' + (d.com || '') + ' Bretagne France');
+            const constructionInfo = d.an ? `${d.per || ''} (${d.an})` : (d.per || 'N/C');
+            const pcrm = getProspectCRM(d);
+
+            document.getElementById('detail-title').textContent = `${d.typ || ''} - ${d.com || ''}`;
+
+            let html = '';
+
+            // CRM status bar
+            html += `<div class="crm-section">
+                <div style="font-weight:700;font-size:12px;color:#333">Statut prospect</div>
+                <div class="crm-status-bar">
+                    ${CRM_STATUSES.map(s => `<button class="crm-status-btn ${pcrm.status === s.id ? 'active' : ''}" data-status="${s.id}" onclick="setDetailStatus('${s.id}')">${s.label}</button>`).join('')}
+                </div>
+            </div>`;
+
+            // Tabs
+            html += `<div class="detail-tabs">
+                <div class="detail-tab active" onclick="switchDetailTab(this, 'tab-resume')">Resume</div>
+                <div class="detail-tab" onclick="switchDetailTab(this, 'tab-travaux')">Travaux</div>
+                <div class="detail-tab" onclick="switchDetailTab(this, 'tab-isolation')">Isolation</div>
+                <div class="detail-tab" onclick="switchDetailTab(this, 'tab-notes')">Notes</div>
+            </div>`;
+
+            // Tab: Resume
+            html += `<div class="detail-tab-body active" id="tab-resume">
+                <div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:12px">
+                    <span class="dpe-badge dpe-${d.dpe}">${d.dpe}</span>
+                    <span class="score-badge score-${scoreClass}">${scoreLabel} ${d.sc}</span>
+                    ${convBadgeHtml(cs)}
+                </div>
+                ${flags.length > 0 ? '<div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:4px">' + flags.map(f => flagToHtml(f)).join('') + '</div>' : ''}
+                ${d.prop ? '<div style="background:#e8f4fd;padding:10px;border-radius:8px;margin-bottom:12px"><div style="font-weight:700;color:#0f3460">' + d.prop + '</div><div style="font-size:11px;color:#666">' + (d.prop_type || '') + ' ' + (d.siren ? '- SIREN ' + d.siren : '') + '</div></div>' : ''}
+                <div style="font-size:13px;font-weight:600;margin-bottom:8px">${d.adr || 'Adresse non renseignee'}${d.com ? ', ' + d.com : ''}</div>
+                <a href="https://www.google.com/maps/search/?api=1&query=${mapsQuery}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:6px;background:#1a73e8;color:white;text-decoration:none;padding:8px 14px;border-radius:6px;font-size:12px;font-weight:600;margin-bottom:16px">&#x1F4CD; Voir sur Google Maps</a>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px">
+                    <div style="background:#fff5f5;padding:10px;border-radius:8px;text-align:center"><div style="font-size:22px;font-weight:800;color:#e3001b">${d.cout ? d.cout.toLocaleString('fr-FR') : 'N/C'}</div><div style="font-size:10px;color:#888">EUR/an</div></div>
+                    <div style="background:#f0f4ff;padding:10px;border-radius:8px;text-align:center"><div style="font-size:22px;font-weight:800;color:#1565c0">${d.surf || 'N/C'}</div><div style="font-size:10px;color:#888">m2${d.niv ? ' - ' + d.niv + ' niv.' : ''}</div></div>
+                    <div style="background:#fff8e1;padding:10px;border-radius:8px;text-align:center"><div style="font-size:22px;font-weight:800;color:#f07d02">${d.conso || 'N/C'}</div><div style="font-size:10px;color:#888">kWh/m2/an</div></div>
+                    <div style="background:#f5f5f5;padding:10px;border-radius:8px;text-align:center"><div style="font-size:16px;font-weight:800;color:#555">${constructionInfo}</div><div style="font-size:10px;color:#888">Construction</div></div>
+                </div>
+                <div style="font-size:12px">
+                    ${d.desc_ch || d.chauf ? '<div style="padding:6px 0;border-bottom:1px solid #f0f0f0"><b>Chauffage:</b> ' + (d.desc_ch || d.chauf) + '</div>' : ''}
+                    ${d.desc_ecs ? '<div style="padding:6px 0;border-bottom:1px solid #f0f0f0"><b>Eau chaude:</b> ' + d.desc_ecs + '</div>' : ''}
+                    ${d.vent ? '<div style="padding:6px 0;border-bottom:1px solid #f0f0f0"><b>Ventilation:</b> ' + d.vent + '</div>' : ''}
+                    ${d.dt ? '<div style="padding:6px 0"><b>Date DPE:</b> ' + d.dt + '</div>' : ''}
+                </div>
+                ${d.dvf ? `<div style="background:#fff3e0;padding:12px;border-radius:8px;margin-top:12px;border-left:4px solid #e65100">
+                    <div style="font-weight:700;font-size:12px;color:#e65100;margin-bottom:8px">Transaction DVF a proximite (${d.dvf.dist}m)</div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+                        <div><div style="font-size:18px;font-weight:800;color:#e65100">${d.dvf.prix.toLocaleString('fr-FR')} EUR</div><div style="font-size:10px;color:#888">Prix de vente</div></div>
+                        <div><div style="font-size:18px;font-weight:800;color:#bf360c">${d.dvf.pm2 ? d.dvf.pm2.toLocaleString('fr-FR') : 'N/C'} EUR/m2</div><div style="font-size:10px;color:#888">Prix au m2</div></div>
+                    </div>
+                    <div style="margin-top:6px;font-size:11px;color:#666"><b>Date:</b> ${d.dvf.date} | <b>Type:</b> ${d.dvf.nat || 'Vente'} | <b>Surface:</b> ${d.dvf.surf ? d.dvf.surf + ' m2' : 'N/C'}</div>
+                </div>` : ''}
+                ${d.rnb_id ? `<div style="background:#e3f2fd;padding:10px;border-radius:8px;margin-top:8px;font-size:11px"><b>RNB:</b> ${d.rnb_id} | <b>Statut:</b> ${d.rnb_status || 'N/C'}</div>` : ''}
+            </div>`;
+
+            // Tab: Travaux
+            html += `<div class="detail-tab-body" id="tab-travaux">`;
+            if (d.trav && d.trav.length > 0) {
+                html += `<div style="margin-bottom:16px">`;
+                d.trav.forEach(t => {
+                    const pct = d.est_total ? Math.round(t.c / d.est_total * 100) : 0;
+                    html += `<div style="margin-bottom:10px">
+                        <div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="font-weight:600">${t.n}</span><span style="font-weight:700">${t.c.toLocaleString('fr-FR')} EUR</span></div>
+                        <div style="background:#eee;height:6px;border-radius:3px;overflow:hidden"><div style="background:#27ae60;height:100%;width:${pct}%;border-radius:3px"></div></div>
+                        <div style="font-size:10px;color:#27ae60;margin-top:2px">Aide estimee: ${t.a.toLocaleString('fr-FR')} EUR</div>
+                    </div>`;
+                });
+                html += `</div>`;
+                html += `<div style="background:linear-gradient(135deg,#e3f2fd,#e8eaf6);padding:16px;border-radius:10px">
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:center">
+                        <div><div style="font-size:20px;font-weight:800;color:#1565c0">${d.est_total ? d.est_total.toLocaleString('fr-FR') : '?'} EUR</div><div style="font-size:10px;color:#666">Total travaux</div></div>
+                        <div><div style="font-size:20px;font-weight:800;color:#27ae60">${d.est_aides ? d.est_aides.toLocaleString('fr-FR') : '?'} EUR</div><div style="font-size:10px;color:#666">Aides (MPR+CEE)</div></div>
+                        <div><div style="font-size:20px;font-weight:800;color:#e65100">${d.est_reste ? d.est_reste.toLocaleString('fr-FR') : '?'} EUR</div><div style="font-size:10px;color:#666">Reste a charge</div></div>
+                        <div><div style="font-size:20px;font-weight:800;color:#6a1b9a">${d.est_roi || '?'} ans</div><div style="font-size:10px;color:#666">ROI</div></div>
+                    </div>
+                    <div style="text-align:center;margin-top:12px;padding-top:8px;border-top:1px solid rgba(0,0,0,0.1)">
+                        <div style="font-size:18px;font-weight:800;color:#2e7d32">${d.est_eco ? d.est_eco.toLocaleString('fr-FR') : '?'} EUR/an</div>
+                        <div style="font-size:10px;color:#666">Economie annuelle estimee</div>
+                    </div>
+                </div>`;
+            } else {
+                html += '<div style="text-align:center;color:#888;padding:30px">Pas de donnees travaux</div>';
+            }
+            html += '</div>';
+
+            // Tab: Isolation
+            html += `<div class="detail-tab-body" id="tab-isolation">`;
+            if (d.iso_m || d.iso_f || d.iso_pb || d.iso_ph) {
+                html += `<h3 style="font-size:13px;color:#e3001b;margin:0 0 10px">Isolation</h3>`;
+                const isoItems = [
+                    d.iso_m ? ['Murs', d.iso_m] : null,
+                    d.iso_f ? ['Fenetres', d.iso_f] : null,
+                    d.iso_pb ? ['Plancher bas', d.iso_pb] : null,
+                    d.iso_ph ? ['Plancher haut', d.iso_ph] : null,
+                ].filter(Boolean);
+                isoItems.forEach(([lbl, val]) => {
+                    const isInsuf = val.toLowerCase().includes('insuffisante');
+                    html += `<div style="display:flex;justify-content:space-between;padding:8px;margin-bottom:4px;background:${isInsuf ? '#fff5f5' : '#f0fff0'};border-radius:6px;font-size:12px;border-left:4px solid ${isInsuf ? '#e3001b' : '#27ae60'}"><span>${lbl}</span><span style="font-weight:700;color:${isInsuf ? '#e3001b' : '#27ae60'}">${val}</span></div>`;
+                });
+                if (d.ubat) html += `<div style="margin-top:10px;padding:8px;background:#f8f8f8;border-radius:6px;font-size:12px"><b>Ubat:</b> ${d.ubat.toFixed(2)} W/m2.K</div>`;
+            }
+            if (d.dep_m || d.dep_v || d.dep_pb || d.dep_ph || d.dep_pt) {
+                html += `<h3 style="font-size:13px;color:#f07d02;margin:16px 0 10px">Deperditions thermiques (W/K)</h3>`;
+                const deps = [
+                    d.dep_m ? ['Murs', d.dep_m] : null,
+                    d.dep_v ? ['Vitres', d.dep_v] : null,
+                    d.dep_pb ? ['Plancher bas', d.dep_pb] : null,
+                    d.dep_ph ? ['Plancher haut', d.dep_ph] : null,
+                    d.dep_pt ? ['Ponts therm.', d.dep_pt] : null,
+                ].filter(Boolean);
+                const maxDep = Math.max(...deps.map(([,v]) => v));
+                deps.forEach(([lbl, val]) => {
+                    const pct = Math.round(val / maxDep * 100);
+                    html += `<div style="margin-bottom:8px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:3px"><span>${lbl}</span><span style="font-weight:700">${Math.round(val)}</span></div><div style="background:#eee;height:8px;border-radius:4px;overflow:hidden"><div style="background:#f07d02;height:100%;width:${pct}%;border-radius:4px"></div></div></div>`;
+                });
+            }
+            if (!d.iso_m && !d.dep_m) html += '<div style="text-align:center;color:#888;padding:30px">Pas de donnees isolation</div>';
+            html += '</div>';
+
+            // Tab: Notes (CRM)
+            html += `<div class="detail-tab-body" id="tab-notes">
+                <div class="crm-notes">
+                    <div style="font-weight:700;font-size:12px;margin-bottom:4px">Notes de prospection</div>
+                    <textarea id="crm-notes-input" placeholder="Ajouter une note (visite, appel, commentaire...)">${pcrm.notes || ''}</textarea>
+                    <button onclick="saveDetailNotes()">Sauvegarder</button>
+                </div>
+                <div style="margin-top:16px;padding-top:12px;border-top:1px solid #eee;font-size:11px;color:#888">
+                    Les notes sont stockees localement dans votre navigateur.
+                </div>
+            </div>`;
+
+            document.getElementById('detail-content').innerHTML = html;
+        }
+
+        function closeDetailPanel() {
+            document.getElementById('detail-panel').classList.remove('open');
+            currentDetailProspect = null;
+        }
+
+        function switchDetailTab(el, tabId) {
+            el.parentElement.querySelectorAll('.detail-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            el.parentElement.parentElement.querySelectorAll('.detail-tab-body').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+        }
+
+        function setDetailStatus(status) {
+            if (!currentDetailProspect) return;
+            setProspectCRM(currentDetailProspect, 'status', status);
+            document.querySelectorAll('.crm-status-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.status === status);
+            });
+        }
+
+        function saveDetailNotes() {
+            if (!currentDetailProspect) return;
+            const notes = document.getElementById('crm-notes-input').value;
+            setProspectCRM(currentDetailProspect, 'notes', notes);
+            alert('Notes sauvegardees !');
+        }
+
+        // ========== EXPORT CSV ==========
+        function exportCSV() {
+            if (filteredData.length === 0) { alert('Aucun prospect a exporter'); return; }
+            const crm = getCRM();
+            const headers = ['DPE','Score','Conv','Adresse','Commune','Departement','Type','Surface_m2','Cout_EUR_an','Conso_kWh','Construction','Chauffage','Isolation','Proprietaire','SIREN','Type_proprio','Travaux_EUR','Aides_EUR','Reste_EUR','Eco_EUR_an','ROI_ans','Date_DPE','Statut_CRM','Notes','Lat','Lng','Google_Maps'];
+            const rows = filteredData.map(d => {
+                const key = getProspectKey(d);
+                const pc = crm[key] || { status: 'new', notes: '' };
+                const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.adr||'')+' '+(d.com||'')+' France')}`;
+                return [d.dpe, d.sc, getConvScore(d), d.adr||'', d.com||'', d.dep||'', d.typ||'', d.surf||'', d.cout||'', d.conso||'', d.an||'', d.desc_ch||d.chauf||'', d.iso||'', d.prop||'', d.siren||'', d.prop_type||'', d.est_total||'', d.est_aides||'', d.est_reste||'', d.est_eco||'', d.est_roi||'', d.dt||'', pc.status, pc.notes.replace(/[\n\r]/g,' '), d.lat, d.lng, mapsUrl];
+            });
+            let csv = '\ufeff' + headers.join(';') + '\n';
+            rows.forEach(r => {
+                csv += r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(';') + '\n';
+            });
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `prospects_bretagne_${filteredData.length}_${new Date().toISOString().slice(0,10)}.csv`;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+
+        // ========== DASHBOARD ==========
+        function toggleDashboard() {
+            const overlay = document.getElementById('dashboard-overlay');
+            if (overlay.style.display === 'none' || !overlay.style.display) {
+                overlay.style.display = 'flex';
+                renderDashboard();
+            } else {
+                overlay.style.display = 'none';
+            }
+        }
+
+        function renderDashboard() {
+            const data = filteredData;
+            const crm = getCRM();
+            const total = data.length;
+
+            // CRM stats
+            const crmStats = {};
+            CRM_STATUSES.forEach(s => crmStats[s.id] = 0);
+            data.forEach(d => {
+                const key = getProspectKey(d);
+                const status = (crm[key] || {}).status || 'new';
+                crmStats[status] = (crmStats[status] || 0) + 1;
+            });
+
+            // Dept stats
+            const deptStats = {};
+            data.forEach(d => { deptStats[d.dep] = (deptStats[d.dep]||0)+1; });
+
+            // Type stats
+            const typeStats = {};
+            data.forEach(d => { typeStats[d.typ] = (typeStats[d.typ]||0)+1; });
+
+            // Score distribution
+            const scoreStats = { hot: 0, warm: 0, tepid: 0, cold: 0 };
+            data.forEach(d => { scoreStats[getScoreCategory(d.sc)]++; });
+
+            // Top communes
+            const comStats = {};
+            data.forEach(d => { if(d.com) comStats[d.com] = (comStats[d.com]||0)+1; });
+            const topCom = Object.entries(comStats).sort((a,b) => b[1]-a[1]).slice(0, 10);
+
+            // Averages
+            const avgCout = data.filter(d=>d.cout).reduce((s,d)=>s+d.cout,0) / (data.filter(d=>d.cout).length || 1);
+            const avgTrav = data.filter(d=>d.est_total).reduce((s,d)=>s+d.est_total,0) / (data.filter(d=>d.est_total).length || 1);
+            const avgRoi = data.filter(d=>d.est_roi).reduce((s,d)=>s+d.est_roi,0) / (data.filter(d=>d.est_roi).length || 1);
+            const propCount = data.filter(d=>d.prop).length;
+
+            function barChart(items, maxVal, color) {
+                return items.map(([label, val]) => {
+                    const pct = Math.round(val / maxVal * 100);
+                    return `<div class="dash-bar"><span class="dash-bar-label">${label}</span><div style="flex:1;background:#3a3a5a;height:20px;border-radius:4px;overflow:hidden"><div class="dash-bar-fill" style="background:${color};width:${pct}%"></div></div><span class="dash-bar-val">${val.toLocaleString('fr-FR')}</span></div>`;
+                }).join('');
+            }
+
+            let html = `<div class="dash-grid">
+                <div class="dash-card">
+                    <h3>Vue d'ensemble</h3>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:center">
+                        <div><div class="dash-big-num">${total.toLocaleString('fr-FR')}</div><div class="dash-big-label">Prospects</div></div>
+                        <div><div class="dash-big-num" style="color:#27ae60">${propCount.toLocaleString('fr-FR')}</div><div class="dash-big-label">Proprios identifies</div></div>
+                        <div><div class="dash-big-num" style="color:#f07d02">${Math.round(avgCout).toLocaleString('fr-FR')}</div><div class="dash-big-label">Cout moyen EUR/an</div></div>
+                        <div><div class="dash-big-num" style="color:#6a1b9a">${avgRoi.toFixed(1)}</div><div class="dash-big-label">ROI moyen (ans)</div></div>
+                    </div>
+                </div>
+                <div class="dash-card">
+                    <h3>Pipeline CRM</h3>
+                    ${barChart(CRM_STATUSES.map(s => [s.label, crmStats[s.id]]), Math.max(...Object.values(crmStats), 1), '#e94560')}
+                </div>
+                <div class="dash-card">
+                    <h3>Par departement</h3>
+                    ${barChart(Object.entries(deptStats).sort((a,b) => b[1]-a[1]), Math.max(...Object.values(deptStats)), '#3498db')}
+                </div>
+                <div class="dash-card">
+                    <h3>Par score</h3>
+                    ${barChart([['HOT (80-100)', scoreStats.hot], ['WARM (60-79)', scoreStats.warm], ['TEPID (40-59)', scoreStats.tepid], ['COLD (0-39)', scoreStats.cold]], Math.max(scoreStats.hot, scoreStats.warm, scoreStats.tepid, scoreStats.cold, 1), '#e94560')}
+                </div>
+            </div>
+            <div class="dash-card">
+                <h3>Top 10 communes</h3>
+                ${barChart(topCom, topCom.length ? topCom[0][1] : 1, '#27ae60')}
+            </div>`;
+
+            document.getElementById('dashboard-content').innerHTML = html;
+        }
+
+        // ========== IMPROVED SCORING ==========
+        function getImprovedScore(d) {
+            let score = 0;
+            // DPE
+            if (d.dpe === 'G') score += 25; // Interdit location 2025
+            else if (d.dpe === 'F') score += 15; // Interdit 2028
+            // Fioul
+            if (d.nrj_ch && (d.nrj_ch.toLowerCase().includes('fioul') || (d.desc_ch && d.desc_ch.toLowerCase().includes('fioul')))) score += 15;
+            // Cout energie
+            if (d.cout && d.cout > 5000) score += 20;
+            else if (d.cout && d.cout > 3000) score += 15;
+            else if (d.cout && d.cout > 2000) score += 8;
+            // Maison > 100m2
+            if (d.typ === 'maison' && d.surf && d.surf > 100) score += 10;
+            else if (d.typ === 'maison') score += 5;
+            // ROI rapide
+            if (d.est_roi && d.est_roi <= 5) score += 15;
+            else if (d.est_roi && d.est_roi <= 8) score += 10;
+            else if (d.est_roi && d.est_roi <= 12) score += 5;
+            // Proprietaire identifie
+            if (d.prop) score += 10;
+            // Batiment ancien
+            if (d.an && d.an < 1975) score += 5;
+            // Isolation insuffisante partout = urgence
+            if (d.iso && d.iso.toLowerCase().includes('insuffisante')) score += 5;
+            return Math.min(score, 100);
+        }
+
+        // ========== PAGINATION ==========
+        let zonePage = 0;
+        const ZONE_PAGE_SIZE = 30;
+
         // Load data (try JSON first, fallback to gzipped)
         async function loadProspects() {
             try {
@@ -1831,6 +2356,9 @@
         loadProspects()
             .then(data => {
                 allData = data.filter(d => d.lat && d.lng);
+
+                // Apply improved scoring
+                allData.forEach(d => { d.sc = getImprovedScore(d); });
 
                 // Build communes list
                 allData.forEach(d => { if (d.com) communes.add(d.com); });
