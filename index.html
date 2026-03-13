@@ -224,6 +224,19 @@
             padding-top: 8px;
             border-top: 1px solid #eee;
         }
+        .popup-content .popup-address a.maps-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            color: #1a73e8;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+        .popup-content .popup-address a.maps-link:hover {
+            text-decoration: underline;
+            color: #0d47a1;
+        }
         .popup-cost-highlight {
             background: linear-gradient(135deg, #ffe0e0, #fff0e0);
             padding: 6px 10px;
@@ -1441,6 +1454,7 @@
                     </div>
                     ${d.est_total ? '<div class="addr-details"><span style="color:#27ae60">Travaux: ' + d.est_total.toLocaleString('fr-FR') + ' EUR</span><span style="color:#2980b9">Aides: ' + (d.est_aides||0).toLocaleString('fr-FR') + ' EUR</span><span style="color:#e65100;font-weight:bold">Reste: ' + (d.est_reste||0).toLocaleString('fr-FR') + ' EUR</span></div>' : ''}
                     ${d.est_eco ? '<div class="addr-details"><span style="color:#2e7d32">Eco: ' + d.est_eco.toLocaleString('fr-FR') + ' EUR/an</span><span style="color:#6a1b9a">ROI: ' + (d.est_roi||'?') + ' ans</span></div>' : ''}
+                    <div class="addr-details"><a href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.adr || '') + ' ' + (d.com || '') + ' Bretagne France')}" target="_blank" rel="noopener" style="color:#1a73e8;text-decoration:none;font-weight:600">&#x1F4CD; Google Maps</a></div>
                 `;
 
                 // Click to fly to the point and open popup
@@ -1565,9 +1579,13 @@
                     <div class="popup-row"><span class="popup-label">Ventilation</span><span class="popup-value">${d.vent || 'N/C'}</span></div>
                     <div class="popup-row"><span class="popup-label">Isolation globale</span><span class="popup-value">${d.iso || 'N/C'}</span></div>
                     <div class="popup-row"><span class="popup-label">GES</span><span class="popup-value">${d.ges || 'N/C'}</span></div>
+                    <div class="popup-row"><span class="popup-label">Date DPE</span><span class="popup-value">${d.dt || 'N/C'}</span></div>
                     ${isolationDetail}
                     ${deperditionsHtml}
-                    <div class="popup-address">${d.adr || 'Adresse non renseignee'}</div>
+                    <div class="popup-address">
+                        ${d.adr || 'Adresse non renseignee'}${d.com ? ', ' + d.com : ''}
+                        <br><a class="maps-link" href="https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((d.adr || '') + ' ' + (d.com || '') + ' Bretagne France')}" target="_blank" rel="noopener">&#x1F4CD; Voir sur Google Maps</a>
+                    </div>
                 </div>
             `, { maxWidth: 340 });
 
